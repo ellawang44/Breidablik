@@ -266,7 +266,7 @@ class Interpolate:
 
         Returns
         -------
-        predicted : 2darray
+        predicted : 1darray
             The predicted flux given the input stellar parameters and lithium abundance.
         """
 
