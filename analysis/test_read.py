@@ -1,11 +1,11 @@
-from analysis import read
-import pytest
+from breidablik.analysis import read
 from hypothesis import given, assume
 from hypothesis.strategies import floats
 import math
-import os
-import warnings
 import numpy as np
+import os
+import pytest
+import warnings
 
 pytestmark = pytest.mark.skipif((not os.path.isdir('Balder')) or (len(os.listdir('Balder')) == 0), reason = 'No raw data')
 

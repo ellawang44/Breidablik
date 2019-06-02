@@ -1,4 +1,4 @@
-from ML import interpolate
+from breidablik.ML import interpolate
 import numpy as np
 import pytest
 import warnings

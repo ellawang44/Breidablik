@@ -1,4 +1,4 @@
-from analysis import tools
+from breidablik.analysis import tools
 import numpy as np
 import pytest
 
