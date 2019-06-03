@@ -31,7 +31,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.0',  # Required
+    version='0.1.1',  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
@@ -156,7 +156,7 @@ setup(
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
     package_data={  # Optional
-        'breidablik': ['grid_snapshot.txt', 'models/*.pkl', 'Balder/wavelength.dat', 'Balder/*/*/*.dat'],
+        'breidablik': ['Balder/wavelengths.dat', 'grid_snapshot.txt', 'models/*.pkl'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
