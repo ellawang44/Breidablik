@@ -25,13 +25,30 @@ If the raw data is placed in a folder elsewhere, every function that has optiona
 ### Manual Installation
 To manually install Breidablik, there are 4 steps:
 
-1. clone this git repository using:
+1. clone this git repository.
+2. Navigate into `Breidablik/breidablik`.
+3. Download the models from `models.zip` on http://www.mso.anu.edu.au/~ellawang/ and unzip it.
+4. Download the raw data from `balder.zip` on http://www.mso.anu.edu.au/~ellawang/ and unzip it.
+
+If you are using linux/macOS, then you can use the following commands to do the manual installation:
+1.
 ```
 git clone https://github.com/ellawang44/Breidablik
 ```
-2. Navigate into `Breidablik/breidablik`
-3. Download the models from `models.zip` on http://www.mso.anu.edu.au/~ellawang/ and create a folder named `models` to place them in.
-4. Download the raw data from `balder.zip` on http://www.mso.anu.edu.au/~ellawang/ and _merge_ it into the existing `Balder` folder.
+2.
+```
+cd Breidablik/breidablik
+```
+3.
+```
+wget http://www.mso.anu.edu.au/~ellawang/models.zip
+unzip models.zip
+```
+4.
+```
+wget http://www.mso.anu.edu.au/~ellawang/balder.zip
+unzip balder.zip
+```
 
 ## Getting Started
-To be written soon. 
+To be written soon.

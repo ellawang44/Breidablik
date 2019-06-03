@@ -16,21 +16,21 @@ def _name_add(name):
         name = '+' + name
     return name
 
-def _get_dimension_path(D = '3D', a = 1.5, v = 1):
+def _get_dimension_path(D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
     """Gets the path to the specified dimension.
     """
 
     if D == '3D':
-        D_path = os.path.join(_base_path.parent / 'Balder', '3D')
+        D_path = os.path.join(data_path, '3D')
     elif D == '1D':
-        D_path = os.path.join(_base_path.parent / 'Balder', '1D_a' + str(float(a)) + '_v' + str(float(v)))
+        D_path = os.path.join(data_path, '1D_a' + str(float(a)) + '_v' + str(float(v)))
     return D_path
 
-def _closest_temp(temperature, surf_g, met, D = '3D', a = 1.5, v = 1):
+def _closest_temp(temperature, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
     """Finds the temperature closest to the input temperature given that the surface gravity and metallicity values match. The output will always be accurate to 2 decimal places (the output will match the names of the models).
     """
 
-    D_path = _get_dimension_path(D = D, a = a, v = v)
+    D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     all_models = [f for f in os.listdir(D_path)]
     possible_temps = list(set([float(mod[1:8]) for mod in all_models if float(mod[9:12]) == surf_g and float(mod[13:]) == met])) # remove duplicates
     temp = str(possible_temps[np.argmin(np.abs(np.array(possible_temps) - temperature))])
@@ -40,16 +40,16 @@ def _closest_temp(temperature, surf_g, met, D = '3D', a = 1.5, v = 1):
         warnings.warn('closest temp is more than 250 K away from the input temperature. Returned closest model. The temperature snapped to: {}'.format(temp))
     return temp
 
-def _get_model_path(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1):
+def _get_model_path(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
     """Returns path of model given the stellar parameters. Will return closest model with the closest temp that matches the input temp. surf_g and met have to be exact.
     """
 
-    D_path = _get_dimension_path(D = D, a = a, v = v)
-    c_temp = _closest_temp(eff_t, surf_g, met, D = D, a = a, v = v)
+    D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
+    c_temp = _closest_temp(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     model_path = os.path.join(D_path, 't' + c_temp + 'g' + str(float(surf_g)) + 'm' + _name_add(met))
     return model_path
 
-def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1):
+def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
     """Reads in the flux data for the specified dimension and stellar parameters.
 
     Parameters
@@ -68,6 +68,8 @@ def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1):
         The mixing length parameter. Accepted values are 1, 1.5, or 2. The input can be expressed in any data type that can be converted into a floating point number.
     v : Real or str, optional
         The microturbulence parameter. Accepted values are 0, 1, or 2. The input can be expressed in any data type that can be converted into a floating point number.
+    data_path : str, optional
+        The folder that the data is stored in.
 
     Returns
     -------
@@ -75,14 +77,19 @@ def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1):
         The NLTE and LTE flux of the specified dimension and stellar model. 'flux' contains the NLTE flux, and 'fluxl' contains the LTE flux.
     """
 
-    model_path = _get_model_path(eff_t, surf_g, met, D = D, a = a, v = v)
+    model_path = _get_model_path(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     abund_path = os.path.join(model_path, 'a' + _name_add(abund) + '.dat')
     flux, fluxl = np.loadtxt(abund_path, unpack = True)
     flux_data = {'flux': flux, 'fluxl': fluxl}
     return flux_data
 
-def get_wavelengths():
+def get_wavelengths(data_path = _base_path.parent / 'Balder'):
     """Returns the wavelengths for the flux data.
+
+    Parameters
+    ----------
+    data_path : str, optional
+        The folder that the data is stored in.
 
     Returns
     -------
@@ -90,7 +97,7 @@ def get_wavelengths():
         The wavelengths for the flux data.
     """
 
-    wl = np.loadtxt(os.path.join(_base_path.parent / 'Balder', 'wavelengths.dat'))
+    wl = np.loadtxt(os.path.join(data_path, 'wavelengths.dat'))
 
     # check monotonic
     if not np.all(wl[1:] > wl[:-1]):
@@ -98,7 +105,7 @@ def get_wavelengths():
 
     return wl
 
-def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1):
+def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
     """Reads in the fluxes for all lithium abundances for a dimension and stellar model.
 
     Parameters
@@ -115,6 +122,8 @@ def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1):
         The mixing length parameter. Accepted values are 1, 1.5, or 2. The input can be expressed in any data type that can be converted into a floating point number.
     v : Real or str, optional
         The microturbulence parameter. Accepted values are 0, 1, or 2. The input can be expressed in any data type that can be converted into a floating point number.
+    data_path : str, optional
+        The folder that the data is stored in.
 
     Returns
     -------
@@ -122,14 +131,14 @@ def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1):
         The NLTE and LTE fluxes for all lithium abundances of a model. The outermost keys are the lithium abundances. The inner keys are 'flux' (retreives the NLTE flux) and 'fluxl' (retreives the LTE flux).
     """
 
-    model_path = _get_model_path(eff_t, surf_g, met, D = D, a = a, v = v)
+    model_path = _get_model_path(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     abunds = sorted([float(ab[1:-4]) for ab in os.listdir(model_path)])
     data = {}
     for abund in abunds:
-        data[abund] = read(eff_t, surf_g, met, abund, D = D, a = a, v = v)
+        data[abund] = read(eff_t, surf_g, met, abund, D = D, a = a, v = v, data_path = data_path)
     return data
 
-def read_all(D = '3D', a = 1.5, v = 1):
+def read_all(D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
     """Read in all the data for some dimension.
 
     Parameters
@@ -140,6 +149,8 @@ def read_all(D = '3D', a = 1.5, v = 1):
         The mixing length parameter. Accepted values are 1, 1.5, or 2. The input can be expressed in any data type that can be converted into a floating point number.
     v : Real or str, optional
         The microturbulence parameter. Accepted values are 0, 1, or 2. The input can be expressed in any data type that can be converted into a floating point number.
+    data_path : str, optional
+        The folder that the data is stored in.
 
     Returns
     -------
@@ -147,14 +158,14 @@ def read_all(D = '3D', a = 1.5, v = 1):
         All the data stored in the specified dimension. The outermost keys are the stellar parameters for the models. The next keys are the lithium abundances. The innermost keys are 'flux' which retreives the NLTE flux or 'fluxl' which retreives the LTE flux. If split is used then the outermost keys are the split sets (either 'train' or 'test').
     """
 
-    D_path = _get_dimension_path(D = D, a = a, v = v)
+    D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     models = os.listdir(D_path)
     data = {}
     for model in models:
         eff_t = float(model[1:8])
         surf_g = float(model[9:12])
         met = float(model[13:])
-        data[eff_t, surf_g, met] = read_all_abund(eff_t, surf_g, met, D = D, a = a, v = v)
+        data[eff_t, surf_g, met] = read_all_abund(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     return data
 
 def split(data, split, seed = None):

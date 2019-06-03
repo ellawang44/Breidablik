@@ -9,7 +9,7 @@ import warnings
 _base_path = Path(__file__).parent
 
 class Interpolate:
-    """Interpolation class. Used to interpolate between the stellar parameters. Can find the abundance of an input flux given the stellar parameters. Can also predict a flux from the stellar parameters and abundance.
+    """Interpolation class. Used to interpolate between the stellar parameters. Can find the abundance of an input flux given the stellar parameters. Can also predict a flux from the stellar parameters and abundance. Additionally, can predict the abundance from REW.
     """
 
     def __init__(self, model_path = _base_path.parent / 'models/mlp.pkl', scalar_path = _base_path.parent / 'models/mlp_scalar.pkl', rew_model_path = _base_path.parent / 'models/rew_3D.pkl', rew_scalar_path = _base_path.parent / 'models/rew_3D_scalar.pkl'):
@@ -21,6 +21,10 @@ class Interpolate:
             The path to the model to be used to predict the flux.
         scalar_path : str, optional
             The path to the scalar corresponding to the model.
+        rew_model_path : str, optional
+            The path to the rew model to be used to predict the lithium abundance.
+        rew_scalar_path : str, optional
+            The path to the scalar corresponding to the rew model.
         """
 
         self.scalar = joblib.load(scalar_path)
