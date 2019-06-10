@@ -2,52 +2,37 @@
 An interpolation routine and abundance predictor wrapper around stellar spectra for lithium generated from Balder (Amarsi et al. 2016) and the Stagger-grid (Magic et al. 2013). The raw synthetic spectra are not part of the package, however, can be found in `balder.zip` on http://www.mso.anu.edu.au/~ellawang/. We interpolate between stellar parameters and lithium abundance inputs to generate interpolated synthetic spectra, these interpolation models are provided as part of the package. Using the interpolation routine, we can predict the lithium profile given any stellar parameters and lithium abundance input, we can also predict the lithium abundance given an observed spectrum and stellar parameters.
 
 ## Installation
-### Automatic Installation
-To install the interpolation routine and models run:
-```
-pip3 install breidablik
-```
-This will install Breidablik _without_ the raw synthetic spectra.
+### Install with pip (automatic)
+To install the interpolation routine and models with `pip`, there are 3 steps:
+1. Install Breidablik through `pip`. This will install Breidablik _without_ the raw synthetic spectra.
+2. Optional, download the raw data.
 
-### Data Download
-Whilst Breidablik will happily interpolate and predict lithium abundances without the raw synthetic spectra, the raw spectra can be found here: in `balder.zip` on http://www.mso.anu.edu.au/~ellawang/. There are functions under `breidablik.analysis.read` which will read in the raw synthetic spectra, and thus depends on this data.
+Whilst Breidablik will happily interpolate and predict lithium abundances without the raw synthetic spectra, the raw spectra can be found in `balder.zip` on http://www.mso.anu.edu.au/~ellawang/. There are functions under `breidablik.analysis.read` which will read in the raw synthetic spectra, and thus depends on this data.
+3. Optional, put the raw data in the breidablik folder.
 
 The functions in `breidablik.analysis.read` have a `data_path` parameter which is the path to the folder containing the raw spectra. By default, this path is set to a folder named `Balder` inside the `breidablik` package. Therefore, I recommend putting the data inside the `Balder` folder inside the `breidablik` package; however, this is not a requirement.  
 
-To put the data inside `breidablik`, we need to locate where `pip3` has installed `breidablik`, this can be done using:
+If you are using linux/macOS, then you can install using:
 ```
-pip3 show breidablik
+git clone https://github.com/ellawang44/Breidablik
+cd Breidablik
+./install_auto
 ```
-The path to `breidablik` should be displayed, navigate to it. Inside this folder, there should already be a folder named `Balder` with `wavelengths.dat` in it. Merge the `Balder` folder containing the other data files with this pre-existing folder.
 
-If the raw data is placed in a folder elsewhere, every function that has optional parameter `data_path` needs to point to this folder location.
+### Install without pip (manual)
+To install Breidablik without using `pip`, there are 5 steps:
 
-### Manual Installation
-To manually install Breidablik, there are 4 steps:
-
-1. clone this git repository.
+1. Navigate to where you want this repository and clone this git repository.
 2. Navigate into `Breidablik/breidablik`.
 3. Download the models from `models.zip` on http://www.mso.anu.edu.au/~ellawang/ and unzip it.
 4. Download the raw data from `balder.zip` on http://www.mso.anu.edu.au/~ellawang/ and unzip it.
+5. Optional: Add this directory to the python path. This makes the directory findable by python no matter where it is launched.
 
-If you are using linux/macOS, then you can use the following commands to do the manual installation:
-1.
+If you are using linux/macOS, then you can navigate to where you want this repository and run:
 ```
 git clone https://github.com/ellawang44/Breidablik
-```
-2.
-```
-cd Breidablik/breidablik
-```
-3.
-```
-wget http://www.mso.anu.edu.au/~ellawang/models.zip
-unzip models.zip
-```
-4.
-```
-wget http://www.mso.anu.edu.au/~ellawang/balder.zip
-unzip balder.zip
+cd Breidablik
+./install_man
 ```
 
 ## Getting Started

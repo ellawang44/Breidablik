@@ -1,0 +1,13 @@
+#1. Install with pip
+pip3 install breidablik
+#2,3. Optional, download the raw data and put it in the breidablik folder
+echo "Do you wish to download the raw data?"
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) path=$(pip3 show breidablik); cd path; wget http://www.mso.anu.edu.au/~ellawang/balder.zip; unzip balder.zip; rm balder.zip; cd -; break;;
+        No ) exit;;
+    esac
+done
+# remove the repo
+cd ..
+rm -rf Breidablik

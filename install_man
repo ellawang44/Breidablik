@@ -1,0 +1,19 @@
+#!/bin/bash
+#2. Navigate into the subdirectory
+cd breidablik
+#3. Download models
+wget http://www.mso.anu.edu.au/~ellawang/models.zip
+unzip models.zip
+rm models.zip
+#4. Download data
+wget http://www.mso.anu.edu.au/~ellawang/balder.zip
+unzip balder.zip
+rm balder.zip
+#5. Optional, add to python path
+echo "Do you wish to add this package to the python path?"
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) cd ..; path=$(pwd); echo -e "\n#Add breidablik to PYTHONPATH" >> ~/.bashrc; echo "export PYTHONPATH=$path:"'$PYTHONPATH' >> ~/.bashrc; break;;
+        No ) cd ..; exit;;
+    esac
+done
