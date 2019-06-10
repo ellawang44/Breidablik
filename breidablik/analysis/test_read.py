@@ -1,7 +1,6 @@
 from breidablik.analysis import read
 from hypothesis import given, assume
 from hypothesis.strategies import floats
-import math
 import numpy as np
 import os
 import pytest
@@ -13,7 +12,7 @@ class Test_name_add:
 
     @given(floats())
     def test_num(self, x):
-        assume(not math.isnan(x))
+        assume(not np.isnan(x))
         assert x == float(read._name_add(x))
 
     @given(floats())

@@ -1,5 +1,6 @@
 from breidablik.analysis import read
 from breidablik.analysis import tools
+from breidablik.interpolate.grid_check import _grid_check
 import joblib
 import numpy as np
 from pathlib import Path
@@ -9,10 +10,10 @@ import warnings
 _base_path = Path(__file__).parent
 
 class Interpolate:
-    """Interpolation class. Used to interpolate between the stellar parameters. Can find the abundance of an input flux given the stellar parameters. Can also predict a flux from the stellar parameters and abundance. Additionally, can predict the abundance from REW.
+    """Interpolation class for spectra. Used to interpolate between the stellar parameters. Can find the abundance of an input flux given the stellar parameters. Can also predict a flux from the stellar parameters and abundance.
     """
 
-    def __init__(self, model_path = _base_path.parent / 'models/mlp.pkl', scalar_path = _base_path.parent / 'models/mlp_scalar.pkl', rew_model_path = _base_path.parent / 'models/rew_3D.pkl', rew_scalar_path = _base_path.parent / 'models/rew_3D_scalar.pkl'):
+    def __init__(self, model_path = _base_path.parent / 'models/mlp.pkl', scalar_path = _base_path.parent / 'models/mlp_scalar.pkl'):
         """Initialise the data by reading the pickled models and scalar.
 
         Parameters
@@ -21,75 +22,12 @@ class Interpolate:
             The path to the model to be used to predict the flux.
         scalar_path : str, optional
             The path to the scalar corresponding to the model.
-        rew_model_path : str, optional
-            The path to the rew model to be used to predict the lithium abundance.
-        rew_scalar_path : str, optional
-            The path to the scalar corresponding to the rew model.
         """
 
         self.scalar = joblib.load(scalar_path)
         self.models = joblib.load(model_path)
-        self.rew_models = [None, joblib.load(rew_model_path), None]
-        self.rew_scalars = [None, joblib.load(rew_scalar_path), None]
         self.relative_error = 1e-14
         self.cut_models = None
-
-    def _grid_check(self, eff_t, surf_g, met):
-        """Check if the stellar parameters are too far outside the edge of the grid
-        """
-
-        with open(_base_path.parent / 'grid_snapshot.txt', 'r') as f:
-            t_step, m_step = np.float_(f.readline().split())
-            grid = np.loadtxt(f)
-        input_model = np.array([eff_t*t_step, surf_g, met*m_step])
-        input_tile = np.tile(input_model, (grid.shape[0], 1))
-        min_dist = min(np.sqrt(np.sum(np.square(grid - input_tile), axis = 1)))
-        if min_dist > np.sqrt(3*0.25**2):
-            warnings.warn('Input stellar parameters are outside of the grid, results are extrapolated and may not be reliable.')
-
-    def find_abund_rew(self, eff_t, surf_g, met, rew, center = 6709.659):
-        """Find the abundance based on the stellar parameters and measured reduced equivalent width.
-
-        rew : Real
-            The reduced equivalent width for the lithium line at 670.9 nm.
-        eff_t : Real
-            The effective temperature of the star.
-        surf_g : Real
-            The log surface gravity of the star.
-        met : Real
-            The metallicity of the star.
-        center : Real, optional
-            The center of the lithium line that the input rew corresponds to, in angstroms. The three lithium lines we model are: 6105.298, 6709.659, and 8128.606 angstroms. The input center value will snap to the closest value out of those 3.
-        """
-
-        # TODO: add working with different line centers
-
-        # check the input stellar parameters and abundance
-        if not ((np.array(eff_t).shape == ()) and (np.array(surf_g).shape == ()) and (np.array(met).shape == ()) and (np.array(rew).shape == ())):
-            raise ValueError('The input effective temperature, surface gravity, metallicity, or abundance is not in the right format, they all need to be scalar numbers, detected inputs: eff_t = {}, surf_g = {}, met = {}, and rew = {}'.format(eff_t, surf_g, met, rew))
-        # warn if stellar parameters are too far outside the edge of the grid
-        self._grid_check(eff_t, surf_g, met)
-
-        predicted_li = self._find_abund_rew(eff_t, surf_g, met, [rew], center = 6709.659)[0]
-
-        # warn if predicted Li is outside of grid
-        if (predicted_li < -0.75) or (predicted_li > 4.25):
-            warnings.warn('Predicted lithium abundance is outside of the grid, results are extrapolated and may not be reliable.')
-
-        return predicted_li
-
-    def _find_abund_rew(self, eff_t, surf_g, met, rew, center = 6709.659):
-        """Same as find_abund_rew, hidden version without grid checks so extra warnings aren't thrown. This version can be used to quickly process many rew values.
-        """
-
-        line_centers = np.array([6105.298, 6709.659, 8128.606])
-        ind = np.argmin(np.abs(line_centers - center))
-        scalar = self.rew_scalars[ind]
-        model = self.rew_models[ind]
-        transformed_input = scalar.transform([[eff_t, surf_g, met, r] for r in rew])
-        predicted_li = model.predict(transformed_input)
-
-        return predicted_li
 
     def find_abund(self, wavelength, flux, flux_err, eff_t, surf_g, met, accuracy = 1e-5, method = 'bayes', min_abund = -0.5, max_abund = 4, initial_accuracy = 1e-1, abunds = None, prior = None):
         """Finds the abundance of the spectrum.
@@ -156,7 +94,7 @@ class Interpolate:
         if (prior is not None) and (abunds is None):
             warnings.warn('prior is defined but abunds is not. Both needs to be defined or else prior is ignored.')
         # warn if stellar parameters are too far outside the edge of the grid
-        self._grid_check(eff_t, surf_g, met)
+        _grid_check(eff_t, surf_g, met)
 
         # makes things go vroom vroom. Predictions take a long time
         lower_wl = min(wavelength)
@@ -278,7 +216,7 @@ class Interpolate:
         if not ((np.array(eff_t).shape == ()) and (np.array(surf_g).shape == ()) and (np.array(met).shape == ()) and (np.array(abundance).shape == ())):
             raise ValueError('The input effective temperature, surface gravity, metallicity, or abundance is not in the right format, they all need to be scalar numbers, detected inputs: eff_t = {}, surf_g = {}, met = {}, and abund = {}'.format(eff_t, surf_g, met, abundance))
         # warn if stellar parameters are too far outside the edge of the grid
-        self._grid_check(eff_t, surf_g, met)
+        _grid_check(eff_t, surf_g, met)
         # warn if abundance is too far outside the grid range
         if (abundance < -0.75) or (abundance > 4.25):
             warnings.warn('Input abundance is outside of the grid, results are extrapolated and may not be reliable.')

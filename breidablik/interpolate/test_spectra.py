@@ -1,46 +1,13 @@
-from breidablik.ML import interpolate
+from breidablik.interpolate import spectra
 import numpy as np
 import pytest
 import warnings
-
-def assert_array_eq(x, y):
-    assert np.array_equal(x,y)
-
-class Test_grid_check:
-
-    def test_warning(self):
-        models = interpolate.Interpolate()
-        with warnings.catch_warnings(record = True) as w:
-            warnings.simplefilter('always')
-            models._grid_check(1, 1, 1)
-            assert len(w) == 1
-            assert issubclass(w[0].category, UserWarning)
-
-class Test_find_abund_rew:
-
-    @classmethod
-    def setup_class(cls):
-        cls.models = interpolate.Interpolate()
-
-    def test_input_shape(self):
-        with pytest.raises(ValueError):
-            Test_find_abund_rew.models.find_abund_rew([1], 1, 1, 1)
-            Test_find_abund_rew.models.find_abund_rew(1, [1], 1, 1)
-            Test_find_abund_rew.models.find_abund_rew(1, 1, [1], 1)
-            Test_find_abund_rew.models.find_abund_rew(1, 1, 1, [1])
-
-    def test_warning_pred_abund(self):
-        with warnings.catch_warnings(record = True) as w:
-            warnings.simplefilter('always')
-            Test_find_abund_rew.models.find_abund_rew(6000, 4.5, -2, -10)
-            assert len(w) == 1
-            assert issubclass(w[0].category, UserWarning)
 
 class Test_find_abund:
 
     @classmethod
     def setup_class(cls):
-        cls.models = interpolate.Interpolate()
+        cls.models = spectra.Interpolate()
 
     def test_monontonic(self):
         with pytest.raises(ValueError):
@@ -102,7 +69,7 @@ class Test_predict_flux:
 
     @classmethod
     def setup_class(cls):
-        cls.models = interpolate.Interpolate()
+        cls.models = spectra.Interpolate()
 
     def test_input_shape(self):
         with pytest.raises(ValueError):

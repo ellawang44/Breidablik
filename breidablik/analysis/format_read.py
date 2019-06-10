@@ -37,7 +37,7 @@ def pixel_format(data, wavelength, center = 6709.659, lower = 4, upper = 4, ftyp
     Xy = (np.array(X), np.array(y))
     return Xy
 
-def rew_format(data, wavelength, predict = 'rew', center = 6709.659, upper = 100, lower = 100, ftype = 'flux', step = 1e-3):
+def rew_format(data, wavelength, predict = 'rew', center = 6709.659, upper = 100, lower = 100, ftype = 'flux', num = 10000):
     """Changes the data from read into a machine learning format. This function is for machine learning over REWs.
 
     Parameters
@@ -56,8 +56,8 @@ def rew_format(data, wavelength, predict = 'rew', center = 6709.659, upper = 100
         The amount to go below the center when taking the cut, in the same units as the wavelength.
     ftype : str, optional
         Which type of flux to convert from the data. Possible options are: 'flux' for NLTE or 'fluxl' for LTE.
-    step : Real, optional
-        The step size the interpolation should take. Before calculating the REW, the line profile is interpolated to finer wavelength points.
+    num : Int, optional
+        The number of points in the interpolation. Before calculating the REW, the line profile is interpolated to finer wavelength points.
 
     Returns
     -------
@@ -74,7 +74,7 @@ def rew_format(data, wavelength, predict = 'rew', center = 6709.659, upper = 100
         t, g, m = row
         model = data[t, g, m]
         for li in list(model): # lithium abundance
-            rew = tools.rew(wavelength, model[li][ftype], center = center, upper = upper, lower = lower, step = step)
+            rew = tools.rew(wavelength, model[li][ftype], center = center, upper = upper, lower = lower, num = num)
             if predict == 'rew':
                 X.append([t, g, m, li])
                 y.append(rew)
