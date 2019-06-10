@@ -1,3 +1,4 @@
+#!/bin/bash
 #1. Install with pip
 pip3 install breidablik
 #2,3. Optional, download the raw data and put it in the breidablik folder
