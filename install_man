@@ -13,7 +13,7 @@ rm balder.zip
 echo "Do you wish to add this package to the python path?"
 select yn in "Yes" "No"; do
     case $yn in
-        Yes ) cd ..; path=$(pwd); echo -e "\n#Add breidablik to PYTHONPATH" >> ~/.bashrc; echo "export PYTHONPATH=$path:"'$PYTHONPATH' >> ~/.bashrc; break;;
+        Yes ) cd ..; path=$(pwd); echo -e "\n#Add breidablik to PYTHONPATH" >> ~/.bashrc; echo "export PYTHONPATH=$path:"'$PYTHONPATH' >> ~/.bashrc; source ~/.bashrc; break;;
         No ) cd ..; exit;;
     esac
 done
