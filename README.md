@@ -31,11 +31,11 @@ cd Breidablik
 ./install_man
 ```
 
-To check that the installation was successful, in the Breidablik folder, you can run:
+Optional: to check that the installation was successful, in the Breidablik folder, you can run:
 ```
 python -m pytest
 ```
-If all tests pass with no warnings, then the installation was successful. 
+If all tests pass with no warnings, then the installation was successful.
 
 ## Getting Started
 To be written soon.
