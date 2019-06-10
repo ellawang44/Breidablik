@@ -2,11 +2,16 @@ from breidablik.analysis import read
 from hypothesis import given, assume
 from hypothesis.strategies import floats
 import numpy as np
+from pathlib import Path
 import os
 import pytest
 import warnings
 
-pytestmark = pytest.mark.skipif((not os.path.isdir('Balder')) or (len(os.listdir('Balder')) == 0), reason = 'No raw data')
+_base_path = Path(__file__).parent.parent
+balder_path = os.path.join(_base_path, 'Balder')
+balder_files = os.listdir(balder_path)
+# skip these tests if there is no raw data
+pytestmark = pytest.mark.skipif((len(balder_files) == 1) and (balder_files[0] == 'wavelengths.dat'), reason = 'No raw data')
 
 class Test_name_add:
 
