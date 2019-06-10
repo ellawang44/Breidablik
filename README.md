@@ -5,12 +5,8 @@ An interpolation routine and abundance predictor wrapper around stellar spectra 
 ### Install with pip (automatic)
 To install the interpolation routine and models with `pip`, there are 3 steps:  
 1. Install Breidablik through `pip`. This will install Breidablik _without_ the raw synthetic spectra.  
-2. Optional, download the raw data.  
-
-Whilst Breidablik will happily interpolate and predict lithium abundances without the raw synthetic spectra, the raw spectra can be found in `balder.zip` on http://www.mso.anu.edu.au/~ellawang/. There are functions under `breidablik.analysis.read` which will read in the raw synthetic spectra, and thus depends on this data.  
-3. Optional, put the raw data in the breidablik folder.
-
-The functions in `breidablik.analysis.read` have a `data_path` parameter which is the path to the folder containing the raw spectra. By default, this path is set to a folder named `Balder` inside the `breidablik` package. Therefore, I recommend putting the data inside the `Balder` folder inside the `breidablik` package; however, this is not a requirement.  
+2. Optional, download the raw data. Whilst Breidablik will happily interpolate and predict lithium abundances without the raw synthetic spectra, the raw spectra can be found in `balder.zip` on http://www.mso.anu.edu.au/~ellawang/. There are functions under `breidablik.analysis.read` which will read in the raw synthetic spectra, and thus depends on this data.  
+3. Optional, put the raw data in the breidablik folder. The functions in `breidablik.analysis.read` have a `data_path` parameter which is the path to the folder containing the raw spectra. By default, this path is set to a folder named `Balder` inside the `breidablik` package. Therefore, I recommend putting the data inside the `Balder` folder inside the `breidablik` package; however, this is not a requirement.  
 
 If you are using linux/macOS, then you can install using:
 ```
