@@ -43,9 +43,8 @@ Now we can see what lithium abundance the model predicts the Sun has - for this 
   models = spectra.Interpolate()
   # find the abundance of the observed spectrum
   abund = models.find_abund(wl, flux, flux_err, t_eff, log_g, met)
-  print(abund)
 
-The output is 1.128 dex, which is not a bad prediction considering that 1.1 dex was simulated.
+Checking the value of ``abund``, we have that the output is 1.128 dex, which is not a bad prediction considering that 1.1 dex was simulated.
 
 Check results
 +++++++++++++
@@ -73,7 +72,7 @@ We can plot the observed flux and the predicted flux to see if they look similar
   plt.errorbar(wl, flux, yerr = flux_err, ecolor = 'C0')
   plt.plot(pred_wl, pred_flux, label = 'predicted', color = 'C1')
   plt.legend()
-  plt.show()
+  plt.xlim(6709, 6710.5)
 
 Generate mock observed spectrum
 +++++++++++++++++++++++++++++++
@@ -89,7 +88,7 @@ First, we'll read in the simulated spectra and wavelengths.
   flux, _ = np.loadtxt('sun.txt', unpack = True)
 
   # read wavelengths
-  from analysis import read
+  from breidablik.analysis import read
   wl = read.get_wavelengths()
   # all of the simulated spectra have the same wavelength points
 
@@ -98,7 +97,7 @@ Next, we'll narrow down the spectra to the region we care about, the original sp
 ::
 
   # cut spectra
-  from analysis import tools
+  from breidablik.analysis import tools
   wl_cut, flux_cut = tools.cut(wl, flux, center = 6709.659,
                                upper = 4, lower = 4)
 
