@@ -30,10 +30,12 @@ spectra
 +++++++
 .. autoclass:: breidablik.interpolate.spectra.Interpolate
     :members:
+    :special-members: __init__
     :undoc-members:
 
 rew
 +++
 .. autoclass:: breidablik.interpolate.rew.Interpolate
     :members:
+    :special-members: __init__
     :undoc-members:

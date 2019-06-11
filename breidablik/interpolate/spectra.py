@@ -13,17 +13,21 @@ class Interpolate:
     """Interpolation class for spectra. Used to interpolate between the stellar parameters. Can find the abundance of an input flux given the stellar parameters. Can also predict a flux from the stellar parameters and abundance.
     """
 
-    def __init__(self, model_path = _base_path.parent / 'models/mlp.pkl', scalar_path = _base_path.parent / 'models/mlp_scalar.pkl'):
-        """Initialise the data by reading the pickled models and scalar.
+    def __init__(self, model_path = None, scalar_path = None):
+        """Initialise the data by loading the pickled models and scalar.
 
         Parameters
         ----------
         model_path : str, optional
-            The path to the model to be used to predict the flux.
+            The path to the model to be used to predict the flux. By default, this path points to ``models/mlp.pkl`` in ``breidablik``.
         scalar_path : str, optional
-            The path to the scalar corresponding to the model.
+            The path to the scalar corresponding to the model. By default, this path points to ``models/mlp_scalar.pkl`` in ``breidablik``.
         """
 
+        # set default paths
+        model_path = model_path or _base_path.parent / 'models/mlp.pkl'
+        scalar_path = scalar_path or _base_path.parent / 'models/mlp_scalar.pkl'
+        # load models
         self.scalar = joblib.load(scalar_path)
         self.models = joblib.load(model_path)
         self.relative_error = 1e-14

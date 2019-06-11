@@ -10,17 +10,21 @@ class Interpolate:
     """Interpolation class for REW. Used to interpolate between the stellar parameters. Can find the abundance given the REW and stellar parameters.
     """
 
-    def __init__(self, model_path = _base_path.parent / 'models/rew_3D.pkl', scalar_path = _base_path.parent / 'models/rew_3D_scalar.pkl'):
+    def __init__(self, model_path = None, scalar_path = None):
         """Initialise the data by reading the pickled models and scalar.
 
         Parameters
         ----------
         model_path : str, optional
-            The path to the rew model to be used to predict the lithium abundance.
+            The path to the rew model to be used to predict the lithium abundance. By default, this path points to ``models/rew_3D.pkl`` in ``breidablik``.
         scalar_path : str, optional
-            The path to the scalar corresponding to the rew model.
+            The path to the scalar corresponding to the rew model. By default, this path points to ``models/rew_3D_scalar.pkl`` in ``breidablik``.
         """
 
+        # set default paths
+        model_path = model_path or _base_path.parent / 'models/rew_3D.pkl'
+        scalar_path = scalar_path or _base_path.parent / 'models/rew_3D_scalar.pkl'
+        # load models
         self.models = [None, joblib.load(model_path), None]
         self.scalars = [None, joblib.load(scalar_path), None]
 

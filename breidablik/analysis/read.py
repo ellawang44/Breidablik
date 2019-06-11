@@ -49,7 +49,7 @@ def _get_model_path(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _b
     model_path = os.path.join(D_path, 't' + c_temp + 'g' + str(float(surf_g)) + 'm' + _name_add(met))
     return model_path
 
-def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
+def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1, data_path = None):
     """Reads in the flux data for the specified dimension and stellar parameters.
 
     Parameters
@@ -69,7 +69,7 @@ def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1, data_path = _base_
     v : Real or str, optional
         The microturbulence parameter. Accepted values are 0, 1, or 2. The input can be expressed in any data type that can be converted into a floating point number.
     data_path : str, optional
-        The folder that the data is stored in.
+        The folder that the data is stored in. By default, this path points to ``Balder`` in ``breidablik``.
 
     Returns
     -------
@@ -77,25 +77,31 @@ def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1, data_path = _base_
         The NLTE and LTE flux of the specified dimension and stellar model. 'flux' contains the NLTE flux, and 'fluxl' contains the LTE flux.
     """
 
+    # set default data_path
+    data_path = data_path or _base_path.parent / 'Balder'
+
     model_path = _get_model_path(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     abund_path = os.path.join(model_path, 'a' + _name_add(abund) + '.dat')
     flux, fluxl = np.loadtxt(abund_path, unpack = True)
     flux_data = {'flux': flux, 'fluxl': fluxl}
     return flux_data
 
-def get_wavelengths(data_path = _base_path.parent / 'Balder'):
+def get_wavelengths(data_path = None):
     """Returns the wavelengths for the flux data.
 
     Parameters
     ----------
     data_path : str, optional
-        The folder that the data is stored in.
+        The folder that the data is stored in. By default, this path points to ``Balder`` in ``breidablik``.
 
     Returns
     -------
     wl : 1darray
         The wavelengths for the flux data in nm.
     """
+
+    # set default data_path
+    data_path = data_path or _base_path.parent / 'Balder'
 
     wl = np.loadtxt(os.path.join(data_path, 'wavelengths.dat'))
 
@@ -105,7 +111,7 @@ def get_wavelengths(data_path = _base_path.parent / 'Balder'):
 
     return wl
 
-def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
+def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = None):
     """Reads in the fluxes for all lithium abundances for a dimension and stellar model.
 
     Parameters
@@ -123,13 +129,16 @@ def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _ba
     v : Real or str, optional
         The microturbulence parameter. Accepted values are 0, 1, or 2. The input can be expressed in any data type that can be converted into a floating point number.
     data_path : str, optional
-        The folder that the data is stored in.
+        The folder that the data is stored in. By default, this path points to ``Balder`` in ``breidablik``.
 
     Returns
     -------
     data : dict of dict
         The NLTE and LTE fluxes for all lithium abundances of a model. The outermost keys are the lithium abundances. The inner keys are 'flux' (retreives the NLTE flux) and 'fluxl' (retreives the LTE flux).
     """
+
+    # set default data_path
+    data_path = data_path or _base_path.parent / 'Balder'
 
     model_path = _get_model_path(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     abunds = sorted([float(ab[1:-4]) for ab in os.listdir(model_path)])
@@ -138,7 +147,7 @@ def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _ba
         data[abund] = read(eff_t, surf_g, met, abund, D = D, a = a, v = v, data_path = data_path)
     return data
 
-def read_all(D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
+def read_all(D = '3D', a = 1.5, v = 1, data_path = None):
     """Read in all the data for some dimension.
 
     Parameters
@@ -150,13 +159,16 @@ def read_all(D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder')
     v : Real or str, optional
         The microturbulence parameter. Accepted values are 0, 1, or 2. The input can be expressed in any data type that can be converted into a floating point number.
     data_path : str, optional
-        The folder that the data is stored in.
+        The folder that the data is stored in. By default, this path points to ``Balder`` in ``breidablik``.
 
     Returns
     -------
     data : dict
         All the data stored in the specified dimension. The outermost keys are the stellar parameters for the models. The next keys are the lithium abundances. The innermost keys are 'flux' which retreives the NLTE flux or 'fluxl' which retreives the LTE flux. If split is used then the outermost keys are the split sets (either 'train' or 'test').
     """
+
+    # set default data_path
+    data_path = data_path or _base_path.parent / 'Balder'
 
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     models = os.listdir(D_path)
