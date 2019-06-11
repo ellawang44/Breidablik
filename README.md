@@ -40,4 +40,4 @@ python -m pytest
 If all tests pass with no warnings, then the installation was successful.
 
 ## Getting Started
-To be written soon.
+See the examples at https://breidablik.readthedocs.io/en/latest/Getting%20Started.html#examples
