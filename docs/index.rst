@@ -1,9 +1,10 @@
 Welcome to Breidablik's documentation!
 ======================================
 
+Contents:
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    About
    Getting Started
