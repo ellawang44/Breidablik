@@ -221,16 +221,16 @@ class Interpolate:
         if (abundance < -0.75) or (abundance > 4.25):
             warnings.warn('Input abundance is outside of the grid, results are extrapolated and may not be reliable.')
 
-        return self._predict_flux(eff_t, surf_g, met, [abundance])[0]
+        return self._predict_flux(eff_t, surf_g, met, [abundance], user_call = True)[0]
 
-    def _predict_flux(self, eff_t, surf_g, met, abundance):
-        """Same as predict_flux. This is the hidden version without asserts for improved performance.
+    def _predict_flux(self, eff_t, surf_g, met, abundance, user_call = False):
+        """Same as predict_flux. This is the hidden version without asserts for improved performance. The flux is only predicted in the region of the cut_models (where cut_models are determined by the input observed spectrum).
 
         Also, you can call this version with a list of abundances. It's faster if you call this function with a list of abundances vs calling the user visible one with a for-loop over abundances. Vroom vroom.
         """
 
         transformed_input = self.scalar.transform([[eff_t, surf_g, met, abund] for abund in abundance])
-        if self.cut_models is not None: # only predict a range of models
+        if (self.cut_models is not None) and (not user_call): # only predict a range of models
             predicted = np.array([model.predict(transformed_input) for model in self.cut_models]).T
         else: # predict all models
             predicted = np.array([model.predict(transformed_input) for model in self.models]).T
