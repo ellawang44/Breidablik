@@ -14,7 +14,7 @@ Predict abundance from spectra
 
 Lets say we have an observed spectrum of the sun and we want to determine the lithium abundance from this spectrum using the 670.9 nm lithium line.
 
-Download the example spectrum, `example.txt`, from https://www.mso.anu.edu.au/~ellawang/. This example spectrum was generated from our simulation of the sun with noise added to the spectrum, how this is done is shown in example 3: generate mock observed spectrum
+Download the example spectrum, ``example.txt``, from https://www.mso.anu.edu.au/~ellawang/. This example spectrum was generated from our simulation of the sun with noise added to the spectrum, how this is done is shown in example 3: generate mock observed spectrum
 
 First, we will read in the spectrum.
 
@@ -78,7 +78,7 @@ We can plot the observed flux and the predicted flux to see if they look similar
 Generate mock observed spectrum
 +++++++++++++++++++++++++++++++
 
-We start with our simulated spectra for the sun with 1.1 dex :sup:`7`\Li, `sun.txt`, this can be downloaded from https://www.mso.anu.edu.au/~ellawang/
+We start with our simulated spectra for the sun with 1.1 dex :sup:`7`\Li, ``sun.txt``, this can be downloaded from https://www.mso.anu.edu.au/~ellawang/
 
 First, we'll read in the simulated spectra and wavelengths.
 
