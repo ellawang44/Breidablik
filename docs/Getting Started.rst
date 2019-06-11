@@ -4,7 +4,7 @@ Getting Started
 Installation
 ------------
 
-See the installation instructions in the README of the repository: https://github.com/ellawang44/Breidablik
+See the installation instructions in the ``README`` of the repository: https://github.com/ellawang44/Breidablik
 
 Examples
 --------
@@ -44,7 +44,7 @@ Now we can see what lithium abundance the model predicts the Sun has - for this 
   # find the abundance of the observed spectrum
   abund = models.find_abund(wl, flux, flux_err, t_eff, log_g, met)
 
-Checking the value of ``abund``, we have that the output is 1.128 dex, which is not a bad prediction considering that 1.1 dex was simulated.
+Checking the value of ``abund``, we have that the output is 1.072 dex, which is not a bad prediction considering that 1.1 dex was simulated.
 
 Check results
 +++++++++++++
@@ -68,11 +68,12 @@ We can plot the observed flux and the predicted flux to see if they look similar
 
   # plot observed and predicted flux
   import matplotlib.pyplot as plt
-  plt.plot(wl, flux, label = 'observed', color = 'C0')
-  plt.errorbar(wl, flux, yerr = flux_err, ecolor = 'C0')
+  plt.scatter(wl, flux, label = 'observed', color = 'C0')
+  plt.errorbar(wl, flux, yerr = flux_err, ecolor = 'C0', fmt = 'none')
   plt.plot(pred_wl, pred_flux, label = 'predicted', color = 'C1')
   plt.legend()
-  plt.xlim(6709, 6710.5)
+  plt.xlim(670.9, 671.05)
+  plt.show()
 
 Generate mock observed spectrum
 +++++++++++++++++++++++++++++++
@@ -98,8 +99,8 @@ Next, we'll narrow down the spectra to the region we care about, the original sp
 
   # cut spectra
   from breidablik.analysis import tools
-  wl_cut, flux_cut = tools.cut(wl, flux, center = 6709.659,
-                               upper = 4, lower = 4)
+  wl_cut, flux_cut = tools.cut(wl, flux, center = 670.9659,
+                               upper = 0.4, lower = 0.4)
 
 Lastly, to mimic real observations, we'll need spectra observed at roughly equidistant points in wavelength, and some noise.
 
@@ -112,7 +113,8 @@ Lastly, to mimic real observations, we'll need spectra observed at roughly equid
   flux_equidist = CubicSpline(wl_cut, flux_cut)(wl_equidist)
 
   # add Gaussian noise
-  from numpy.random import normal
+  from numpy.random import normal, seed
+  seed(19) # set seed for replicability
   noise_scale = 0.003 # control how noisy the spectrum is
   noise = normal(scale = noise_scale, size = num_points)
   flux_noise = flux_equidist + noise
@@ -126,5 +128,5 @@ Now we can write this spectra to a file
   # write to file
   name = 'example.txt'
   data = np.array([wl_equidist, flux_noise, flux_err]).T
-  header = 'wavelength (A) \t normalised flux \t flux error'
+  header = 'wavelength (nm) \t normalised flux \t flux error'
   np.savetxt(name, data, fmt = '%.5e', header = header)

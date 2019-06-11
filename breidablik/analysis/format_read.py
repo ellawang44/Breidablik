@@ -1,7 +1,7 @@
 from breidablik.analysis import tools
 import numpy as np
 
-def pixel_format(data, wavelength, center = 6709.659, lower = 4, upper = 4, ftype = 'flux'):
+def pixel_format(data, wavelength, center = 670.9659, lower = 0.4, upper = 0.4, ftype = 'flux'):
     """Changes the data from read into a machine learning format. This function is for machine learning over pixels.
 
     Parameters
@@ -11,7 +11,7 @@ def pixel_format(data, wavelength, center = 6709.659, lower = 4, upper = 4, ftyp
     wavelength : List[Real] or 1darray
         The wavelengths that correspond to the data. From read.get_wavelengths().
     center : Real, optional
-        The center of the wavelengths where the cut should be taken, in the same units as the wavelength.
+        The center of the wavelengths where the cut should be taken, in the same units as the wavelength. The 3 lithium lines are centered at 610.5298, 670.9659, and 812.8606 nm in the Balder results.
     upper : Real, optional
         The amount to go above the center when taking the cut, in the same units as the wavelength.
     lower : Real, optional
@@ -37,7 +37,7 @@ def pixel_format(data, wavelength, center = 6709.659, lower = 4, upper = 4, ftyp
     Xy = (np.array(X), np.array(y))
     return Xy
 
-def rew_format(data, wavelength, predict = 'rew', center = 6709.659, upper = 100, lower = 100, ftype = 'flux', num = 10000):
+def rew_format(data, wavelength, predict = 'rew', center = 670.9659, upper = 10, lower = 10, ftype = 'flux', num = 10000):
     """Changes the data from read into a machine learning format. This function is for machine learning over REWs.
 
     Parameters
@@ -49,7 +49,7 @@ def rew_format(data, wavelength, predict = 'rew', center = 6709.659, upper = 100
     predict : str, optional
         Determines what varlue is placed in the y data. Accepted options are 'rew' and 'li'.
     center : Real, optional
-        The center of the wavelengths where the cut should be taken, in the same units as the wavelength.
+        The center of the wavelengths where the cut should be taken, in the same units as the wavelength. The 3 lithium lines are centered at 610.5298, 670.9659, and 812.8606 nm in the Balder results.
     upper : Real, optional
         The amount to go above the center when taking the cut, in the same units as the wavelength.
     lower : Real, optional

@@ -24,7 +24,7 @@ class Interpolate:
         self.models = [None, joblib.load(model_path), None]
         self.scalars = [None, joblib.load(scalar_path), None]
 
-    def find_abund(self, eff_t, surf_g, met, rew, center = 6709.659):
+    def find_abund(self, eff_t, surf_g, met, rew, center = 670.9659):
         """Find the abundance based on the stellar parameters and measured reduced equivalent width.
 
         rew : Real
@@ -36,7 +36,7 @@ class Interpolate:
         met : Real
             The metallicity of the star.
         center : Real, optional
-            The center of the lithium line that the input rew corresponds to, in angstroms. The three lithium lines we model are: 6105.298, 6709.659, and 8128.606 angstroms. The input center value will snap to the closest value out of those 3.
+            The center of the lithium line that the input rew corresponds to, in angstroms. The 3 lithium lines are centered at 610.5298, 670.9659, and 812.8606 nm in the Balder results. The input center value will snap to the closest value out of those 3.
         """
 
         # TODO: add working with different line centers
@@ -55,12 +55,15 @@ class Interpolate:
 
         return predicted_li
 
-    def _find_abund(self, eff_t, surf_g, met, rew, center = 6709.659):
+    def _find_abund(self, eff_t, surf_g, met, rew, center = 670.9659):
         """Same as find_abund_rew, hidden version without grid checks so extra warnings aren't thrown. This version can be used to quickly process many rew values.
         """
 
-        line_centers = np.array([6105.298, 6709.659, 8128.606])
+        # centers of the 3 lines we model
+        line_centers = np.array([610.5298, 670.9659, 812.8606])
+        # get which model is being used
         ind = np.argmin(np.abs(line_centers - center))
+        # predict lithium abundance
         scalar = self.scalars[ind]
         model = self.models[ind]
         transformed_input = scalar.transform([[eff_t, surf_g, met, r] for r in rew])

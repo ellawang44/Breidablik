@@ -94,7 +94,7 @@ def get_wavelengths(data_path = _base_path.parent / 'Balder'):
     Returns
     -------
     wl : 1darray
-        The wavelengths for the flux data.
+        The wavelengths for the flux data in nm.
     """
 
     wl = np.loadtxt(os.path.join(data_path, 'wavelengths.dat'))

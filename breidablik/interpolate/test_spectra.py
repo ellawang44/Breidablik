@@ -36,9 +36,9 @@ class Test_find_abund:
     def test_abund_prior_warning(self):
         with warnings.catch_warnings(record = True) as w:
             warnings.simplefilter('always')
-            Test_find_abund.models.find_abund([6000, 7000], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, method = 'leastsq', prior = [1, 2, 3], abunds = [1, 2, 3])
-            Test_find_abund.models.find_abund([6000, 7000], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, prior = [1, 2, 3])
-            Test_find_abund.models.find_abund([6000, 7000], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, abunds = [1, 2, 3])
+            Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, method = 'leastsq', prior = [1, 2, 3], abunds = [1, 2, 3])
+            Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, prior = [1, 2, 3])
+            Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, abunds = [1, 2, 3])
             assert len(w) == 3
             for i in range(len(w)):
                 assert issubclass(w[i].category, UserWarning)
@@ -49,14 +49,14 @@ class Test_find_abund:
 
     def test_abund_prior_shape(self):
         with pytest.raises(ValueError):
-            Test_find_abund.models.find_abund([6800, 6900], [1, 1], [1, 1], 5000, 2.5, -2, abunds = [1, 2], prior = [1])
-            Test_find_abund.models.find_abund([6800, 6900], [1, 1], [1, 1], 5000, 2.5, -2, abunds = [[1, 2]], prior = [[1, 3]])
+            Test_find_abund.models.find_abund([680, 690], [1, 1], [1, 1], 5000, 2.5, -2, abunds = [1, 2], prior = [1])
+            Test_find_abund.models.find_abund([680, 690], [1, 1], [1, 1], 5000, 2.5, -2, abunds = [[1, 2]], prior = [[1, 3]])
 
     def test_warning_pred_abund(self):
         # define square wave
-        wls = np.linspace(6705, 6714, 1000)
+        wls = np.linspace(670.5, 671.4, 1000)
         flux = np.full(len(wls), 1)
-        flux[(6709.5 <= wls) & (wls < 6709.9)] = 0
+        flux[(670.95 <= wls) & (wls < 670.99)] = 0
         flux_err = np.full(len(wls), 0.1)
         # catch warning for predicted value outside of grid
         with warnings.catch_warnings(record = True) as w:
