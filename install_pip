@@ -11,7 +11,7 @@ while true; do
         [Yy]* ) path=$(pip3 show breidablik);
                 cd path; 
                 wget http://www.mso.anu.edu.au/~ellawang/balder.zip; 
-                unzip -r balder.zip; 
+                unzip -q balder.zip; 
                 rm balder.zip; 
                 cd -; 
                 break;;
