@@ -1,4 +1,4 @@
-from breidablik.interpolate import nlte
+from breidablik.interpolate.nlte import Nlte
 import numpy as np
 import pytest
 import warnings
@@ -7,7 +7,7 @@ class Test_nlte_correction:
 
     @classmethod
     def setup_class(cls):
-        cls.models = nlte.Interpolate()
+        cls.models = Nlte()
 
     def test_input_shape(self):
         with pytest.raises(ValueError):

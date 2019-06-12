@@ -1,4 +1,4 @@
-from breidablik.interpolate import rew
+from breidablik.interpolate.rew import Rew
 import numpy as np
 import pytest
 import warnings
@@ -7,7 +7,7 @@ class Test_find_abund:
 
     @classmethod
     def setup_class(cls):
-        cls.models = rew.Interpolate()
+        cls.models = Rew()
 
     def test_input_shape(self):
         with pytest.raises(ValueError):

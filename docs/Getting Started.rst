@@ -15,3 +15,5 @@ Examples
    examples/ex1
    examples/ex2
    examples/ex3
+   examples/ex4
+   examples/ex5

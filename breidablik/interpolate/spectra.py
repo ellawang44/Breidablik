@@ -9,7 +9,7 @@ import warnings
 
 _base_path = Path(__file__).parent
 
-class Interpolate:
+class Spectra:
     """Interpolation class for spectra. Used to interpolate between the stellar parameters. Can find the abundance of an input flux given the stellar parameters. Can also predict a flux from the stellar parameters and abundance.
     """
 

@@ -6,7 +6,7 @@ import warnings
 
 _base_path = Path(__file__).parent
 
-class Interpolate:
+class Rew:
     """Interpolation class for REW. Used to interpolate between the stellar parameters. Can find the abundance given the REW and stellar parameters.
     """
 

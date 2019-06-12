@@ -1,4 +1,4 @@
-from breidablik.interpolate import spectra
+from breidablik.interpolate.spectra import Spectra
 import numpy as np
 import pytest
 import warnings
@@ -7,7 +7,7 @@ class Test_find_abund:
 
     @classmethod
     def setup_class(cls):
-        cls.models = spectra.Interpolate()
+        cls.models = Spectra()
 
     def test_monontonic(self):
         with pytest.raises(ValueError):
@@ -69,7 +69,7 @@ class Test_predict_flux:
 
     @classmethod
     def setup_class(cls):
-        cls.models = spectra.Interpolate()
+        cls.models = Spectra()
 
     def test_input_shape(self):
         with pytest.raises(ValueError):

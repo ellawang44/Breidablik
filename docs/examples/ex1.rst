@@ -4,7 +4,7 @@ Example 1: Predict abundance from spectra
 About
 -----
 
-This example will show you how to predict a lithium abundance from an observed spectrum by using the ``Interpolate`` class in ``breidablik.interpolate.spectra``.
+This example will show you how to predict a lithium abundance from an observed spectrum by using the ``Spectra`` class in ``breidablik.interpolate.spectra``.
 
 Example
 -------
@@ -27,7 +27,7 @@ Since we've observed the Sun, we will use the stellar parameters for the Sun.
 
   # stellar parameters for the Sun
   t_eff = 5777 # K
-  log_g = 4.4 # dex
+  log_g = 4.4 # cgs
   met = 0 # dex
 
 Now we can see what lithium abundance the model predicts the Sun has - for this example spectrum, 1.1 dex :sup:`7`\Li was used.
@@ -35,9 +35,9 @@ Now we can see what lithium abundance the model predicts the Sun has - for this 
 ::
 
   # determine the lithium abundance
-  from breidablik.interpolate import spectra
+  from breidablik.interpolate.spectra import Spectra
   # initialise models
-  models = spectra.Interpolate()
+  models = Spectra()
   # find the abundance of the observed spectrum
   abund = models.find_abund(wl, flux, flux_err, t_eff, log_g, met)
   print(abund)
