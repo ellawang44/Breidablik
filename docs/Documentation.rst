@@ -1,41 +1,10 @@
 Documentation
 =============
 
-analysis
---------
+Here you can find the detailed documentation for the functions and classes in Breidablik.
 
-format_read
-+++++++++++
-.. automodule:: breidablik.analysis.format_read
-    :members:
-    :undoc-members:
+.. toctree::
+   :maxdepth: 2
 
-read
-++++
-.. automodule:: breidablik.analysis.read
-    :members:
-    :undoc-members:
-
-tools
-+++++
-.. automodule:: breidablik.analysis.tools
-    :members:
-    :undoc-members:
-
-
-interpolate
------------
-
-spectra
-+++++++
-.. autoclass:: breidablik.interpolate.spectra.Interpolate
-    :members:
-    :special-members: __init__
-    :undoc-members:
-
-rew
-+++
-.. autoclass:: breidablik.interpolate.rew.Interpolate
-    :members:
-    :special-members: __init__
-    :undoc-members:
+   documentation/analysis
+   documentation/interpolate
