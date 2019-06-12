@@ -16,19 +16,19 @@ class Interpolate:
         Parameters
         ----------
         model_path : str, optional
-            The path to the rew model to be used to predict the lithium abundance. By default, this path points to ``models/rew.pkl`` in ``breidablik``.
+            The path to the rew model to be used to predict the lithium abundance. By default, this path points to ``models/nlte.pkl`` in ``breidablik``.
         scalar_path : str, optional
-            The path to the scalar corresponding to the rew model. By default, this path points to ``models/rew_scalar.pkl`` in ``breidablik``.
+            The path to the scalar corresponding to the rew model. By default, this path points to ``models/nlte_scalar.pkl`` in ``breidablik``.
         """
 
         # set default paths
-        model_path = model_path or _base_path.parent / 'models/rew.pkl'
-        scalar_path = scalar_path or _base_path.parent / 'models/rew_scalar.pkl'
+        model_path = model_path or _base_path.parent / 'models/nlte.pkl'
+        scalar_path = scalar_path or _base_path.parent / 'models/nlte_scalar.pkl'
         # load models
         self.models = [None, joblib.load(model_path), None]
         self.scalars = [None, joblib.load(scalar_path), None]
 
-    def find_abund(self, eff_t, surf_g, met, rew, center = 670.9659):
+    def nlte_correction(self, eff_t, surf_g, met, abundance, center = 670.9659):
         """Find the abundance based on the stellar parameters and measured reduced equivalent width.
 
         rew : Real
@@ -37,8 +37,8 @@ class Interpolate:
             The effective temperature of the star.
         surf_g : Real
             The log surface gravity of the star.
-        met : Real
-            The metallicity of the star.
+        abundance : Real
+            The 1D LTE abundance.
         center : Real, optional
             The center of the lithium line that the input rew corresponds to, in angstroms. The 3 lithium lines are centered at 610.5298, 670.9659, and 812.8606 nm in the Balder results. The input center value will snap to the closest value out of those 3.
         """
@@ -46,21 +46,21 @@ class Interpolate:
         # TODO: add working with different line centers
 
         # check the input stellar parameters and abundance
-        if not ((np.array(eff_t).shape == ()) and (np.array(surf_g).shape == ()) and (np.array(met).shape == ()) and (np.array(rew).shape == ())):
-            raise ValueError('The input effective temperature, surface gravity, metallicity, or abundance is not in the right format, they all need to be scalar numbers, detected inputs: eff_t = {}, surf_g = {}, met = {}, and rew = {}'.format(eff_t, surf_g, met, rew))
+        if not ((np.array(eff_t).shape == ()) and (np.array(surf_g).shape == ()) and (np.array(met).shape == ()) and (np.array(abundance).shape == ())):
+            raise ValueError('The input effective temperature, surface gravity, metallicity, or abundance is not in the right format, they all need to be scalar numbers, detected inputs: eff_t = {}, surf_g = {}, met = {}, and abundance = {}'.format(eff_t, surf_g, met, abundance))
         # warn if stellar parameters are too far outside the edge of the grid
         _grid_check(eff_t, surf_g, met)
 
-        predicted_li = self._find_abund(eff_t, surf_g, met, [rew], center = center)[0]
+        # warn if abundance is too far outside the grid range
+        if (abundance < -0.75) or (abundance > 4.25):
+            warnings.warn('Input abundance is outside of the grid, results are extrapolated and may not be reliable.')
 
-        # warn if predicted Li is outside of grid
-        if (predicted_li < -0.75) or (predicted_li > 4.25):
-            warnings.warn('Predicted lithium abundance is outside of the grid, results are extrapolated and may not be reliable.')
+        predicted_li = self._nlte_correction(eff_t, surf_g, met, [abundance], center = center)[0]
 
         return predicted_li
 
-    def _find_abund(self, eff_t, surf_g, met, rew, center = 670.9659):
-        """Same as find_abund_rew, hidden version without grid checks so extra warnings aren't thrown. This version can be used to quickly process many rew values.
+    def _nlte_correction(self, eff_t, surf_g, met, abunds, center = 670.9659):
+        """Same as nlte_correction, hidden version without grid checks so extra warnings aren't thrown. This version can be used to quickly process many abundances.
         """
 
         # centers of the 3 lines we model
@@ -70,7 +70,7 @@ class Interpolate:
         # predict lithium abundance
         scalar = self.scalars[ind]
         model = self.models[ind]
-        transformed_input = scalar.transform([[eff_t, surf_g, met, r] for r in rew])
-        predicted_li = model.predict(transformed_input)
+        transformed_input = scalar.transform([[eff_t, surf_g, met, a] for a in abunds])
+        nltec = model.predict(transformed_input)
 
-        return predicted_li
+        return nltec
