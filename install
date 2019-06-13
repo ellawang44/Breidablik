@@ -14,13 +14,14 @@ while true; do
     read -p "Do you wish to add this package to the python path? [Y/n]" yn
     [ -z "${yn}" ] && yn='y'
     case $yn in
-        [Yy]* ) cd ..; 
-                path=$(pwd); 
-                echo -e "\n# Add breidablik to PYTHONPATH" >> ~/.bashrc; 
-                echo "export PYTHONPATH=$path:"'$PYTHONPATH' >> ~/.bashrc; 
-                source ~/.bashrc; 
+        [Yy]* ) cd ..;
+                path=$(pwd);
+                echo -e "\n# Add breidablik to PYTHONPATH" >> ~/.bashrc;
+                echo "export PYTHONPATH=$path:"'$PYTHONPATH' >> ~/.bashrc;
+                source ~/.bashrc;
                 break;;
         [Nn]* ) cd ..;
                 exit;;
         * ) echo "Please answer yes or no.";;
     esac
+done
