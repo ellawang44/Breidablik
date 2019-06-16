@@ -38,8 +38,8 @@ Now we can see what lithium abundance the model predicts the Sun has - for this 
   from breidablik.interpolate.spectra import Spectra
   # initialise models
   models = Spectra()
-  # find the abundance of the observed spectrum
-  abund = models.find_abund(wl, flux, flux_err, t_eff, log_g, met)
-  print(abund)
+  # find the abundance and error of the observed spectrum
+  abund, errs = models.find_abund(wl, flux, flux_err, t_eff, log_g, met)
+  print(abund, errs)
 
-Checking the value of ``abund``, we have that the output is 1.072 dex, which is not a bad prediction considering that 1.1 dex was simulated.
+Checking the value of ``abund``, we have that the predicted abundance is 1.07 dex with a negative error of -0.03 dex and positive error of 0.02 dex, which is not a bad prediction considering that 1.1 dex was simulated and the flux error was relatively large.

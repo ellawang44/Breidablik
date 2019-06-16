@@ -36,7 +36,7 @@ class Test_find_abund:
     def test_abund_prior_warning(self):
         with warnings.catch_warnings(record = True) as w:
             warnings.simplefilter('always')
-            Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, method = 'leastsq', prior = [1, 2, 3], abunds = [1, 2, 3])
+            Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, method = 'chisq', prior = [1, 2, 3], abunds = [1, 2, 3])
             Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, prior = [1, 2, 3])
             Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, abunds = [1, 2, 3])
             assert len(w) == 3
@@ -61,7 +61,7 @@ class Test_find_abund:
         # catch warning for predicted value outside of grid
         with warnings.catch_warnings(record = True) as w:
             warnings.simplefilter('always')
-            Test_find_abund.models.find_abund(wls, flux, flux_err, 6000, 4, -3, method = 'leastsq', max_abund = 5)
+            Test_find_abund.models.find_abund(wls, flux, flux_err, 6000, 4, -3, method = 'chisq', max_abund = 5)
             assert len(w) == 1
             assert issubclass(w[0].category, UserWarning)
 

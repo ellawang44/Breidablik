@@ -8,12 +8,13 @@ while true; do
     read -p "Do you wish to download the raw data? [Y/n]" yn
     [ -z "${yn}" ] && yn='y'
     case $yn in
-        [Yy]* ) path=$(pip3 show breidablik);
-                cd path; 
-                wget http://www.mso.anu.edu.au/~ellawang/balder.zip; 
-                unzip -q balder.zip; 
-                rm balder.zip; 
-                cd -; 
+        [Yy]* ) loc=$(pip3 show breidablik | grep "Location");
+                path=${loc:9}
+                cd path;
+                wget http://www.mso.anu.edu.au/~ellawang/balder.zip;
+                unzip -q balder.zip;
+                rm balder.zip;
+                cd -;
                 break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;

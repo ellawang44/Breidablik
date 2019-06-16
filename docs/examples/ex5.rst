@@ -30,4 +30,4 @@ Next, we load in the models by initialising the class, then call the function ``
   nltec = model.nlte_correction(t_eff, log_g, met, abund_1DLTE)
   print(nltec)
 
-Which returns a correction of FILLMEIN dex.
+Which returns a correction of 0.0135 dex.
