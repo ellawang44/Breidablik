@@ -11,7 +11,7 @@ unzip -q balder.zip
 rm balder.zip
 #5. Optional, add to python path
 while true; do
-    read -p "Do you wish to add this package to the python path? [Y/n]" yn
+    read -p "Do you wish to add this package to the python path? [Y/n] " yn
     [ -z "${yn}" ] && yn='y'
     case $yn in
         [Yy]* ) cd ..;
