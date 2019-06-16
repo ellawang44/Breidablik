@@ -9,6 +9,8 @@ See the installation instructions in the ``README`` of the repository: https://g
 Examples
 --------
 
+For a script including all the examples, see ``all_examples.py`` under https://www.mso.anu.edu.au/~ellawang/
+
 .. toctree::
    :maxdepth: 1
 
