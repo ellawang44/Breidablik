@@ -24,6 +24,7 @@ git clone https://github.com/ellawang44/Breidablik
 cd Breidablik
 ./install
 ```
+Once the installation is done, you can delete this repository.
 
 #### Manual
 If the above automatic installation did not work for you, then to install without using `pip`, there are 5 steps:
