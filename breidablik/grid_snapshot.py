@@ -3,6 +3,8 @@ import numpy as np
 
 data = read.read_all()
 
+# make every model 0.5 in distance away from each other
+# normalisation
 t_step = 0.5/500
 m_step = 0.5
 
