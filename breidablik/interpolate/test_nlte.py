@@ -3,6 +3,14 @@ import numpy as np
 import pytest
 import warnings
 
+try:
+    Nlte()
+    flag = False
+except:
+    flag = True
+# skip these tests if the trained models are not present
+pytestmark = pytest.mark.skipif(flag, reason = 'No trained Nlte model')
+
 class Test_nlte_correction:
 
     @classmethod

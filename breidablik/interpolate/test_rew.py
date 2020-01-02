@@ -3,6 +3,14 @@ import numpy as np
 import pytest
 import warnings
 
+try:
+    Rew()
+    flag = False
+except:
+    flag = True
+# skip these tests if the trained models are not present
+pytestmark = pytest.mark.skipif(flag, reason = 'No trained Rew model')
+
 class Test_find_abund:
 
     @classmethod

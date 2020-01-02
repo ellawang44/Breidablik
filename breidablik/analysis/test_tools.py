@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 def assert_array_eq(x, y):
-    assert np.array_equal(x,y)
+    assert np.array_equal(x, y)
 
 class Test_cut_wavelength:
 
