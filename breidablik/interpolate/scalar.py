@@ -10,7 +10,12 @@ class Scalar:
         self.std = None
 
     def fit(self, data):
-        """Create scalar
+        """Create scalar.
+
+        Parameters
+        ----------
+        data : 2darray
+            Needs to be in the form [num of objects x num of parameters].
         """
 
         # make sure no crazy inputs
@@ -27,7 +32,17 @@ class Scalar:
         self.std = np.std(data, axis = 0)
 
     def transform(self, data):
-        """Scale input data
+        """Scale input data.
+
+        Parameters
+        ----------
+        data : 2darray
+            Needs to be in the form [num of objects x num of parameters].
+
+        Returns
+        -------
+        scaled_data : 2darray
+            The scaled data in the form [num of objects x num of parameters].
         """
 
         # make sure there is a fitted scalar
@@ -53,6 +68,11 @@ class Scalar:
 
     def save(self, name):
         """Save scalar
+
+        Parameters
+        ----------
+        name : str
+            The name to save the scalar under.
         """
 
         if (self.mean is None) or (self.std is None):
@@ -61,11 +81,16 @@ class Scalar:
             np.save(name, [self.mean, self.std])
 
     def load(self, name):
-        """Load scalar
+        """Load scalar.
+
+        Parameters
+        ----------
+        name : str
+            The name of the saved scalar.
         """
 
         path = os.path.join(os.getcwd(), name)
-        if os.path.isfile(path):
+        if not os.path.isfile(path):
             raise FileNotFoundError('Attempted to load a scalar not found, path given: {}'.format(path))
         else:
-            self.mean, self.std = np.load(name)
+            self.mean, self.std = np.loadtxt(name)

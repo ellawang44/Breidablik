@@ -1,4 +1,5 @@
 from breidablik.interpolate.grid_check import _grid_check
+from breidablik.interpolate.scalar import Scalar
 import joblib
 import numpy as np
 from pathlib import Path
@@ -25,12 +26,15 @@ class Rew:
         model_path = model_path or _base_path.parent / 'models/rew.pkl'
         scalar_path = scalar_path or _base_path.parent / 'models/rew_scalar.pkl'
         # load models
+        scalar = Scalar()
         self.models = [None, joblib.load(model_path), None]
-        self.scalars = [None, joblib.load(scalar_path), None]
+        self.scalars = [None, scalar.load(scalar_path), None]
 
     def find_abund(self, eff_t, surf_g, met, rew, center = 670.9659):
         """Find the abundance based on the stellar parameters and measured reduced equivalent width.
 
+        Parameters
+        ----------
         rew : Real
             The reduced equivalent width for the lithium line at 670.9 nm.
         eff_t : Real
@@ -41,6 +45,11 @@ class Rew:
             The metallicity of the star.
         center : Real, optional
             The center of the lithium line that the input rew corresponds to, in angstroms. The 3 lithium lines are centered at 610.5298, 670.9659, and 812.8606 nm in the Balder results. The input center value will snap to the closest value out of those 3.
+
+        Returns
+        -------
+        predcited_li : float
+            The predicted lithium abundance.
         """
 
         # TODO: add working with different line centers

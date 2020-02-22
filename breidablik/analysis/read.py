@@ -20,8 +20,8 @@ def _get_dimension_path(D = '3D', a = 1.5, v = 1, data_path = _base_path.parent 
     """Gets the path to the specified dimension.
     """
 
-    if D == '3D':
-        D_path = os.path.join(data_path, '3D')
+    if D == '3D' or D == 'marcs':
+        D_path = os.path.join(data_path, D)
     elif D == '1D':
         D_path = os.path.join(data_path, '1D_a' + str(float(a)) + '_v' + str(float(v)))
     return D_path
@@ -32,7 +32,12 @@ def _closest_temp(temperature, surf_g, met, D = '3D', a = 1.5, v = 1, data_path 
 
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     all_models = [f for f in os.listdir(D_path)]
-    possible_temps = list(set([float(mod[1:8]) for mod in all_models if float(mod[9:12]) == surf_g and float(mod[13:]) == met])) # remove duplicates
+    # get numbers
+    if D == 'marcs':
+        a = 13
+    else:
+        a = 12
+    possible_temps = list(set([float(mod[1:8]) for mod in all_models if float(mod[9:a]) == surf_g and float(mod[a+1:]) == met])) # remove duplicates
     temp = str(possible_temps[np.argmin(np.abs(np.array(possible_temps) - temperature))])
     while len(temp) < 7:
         temp = temp + '0'
@@ -46,7 +51,10 @@ def _get_model_path(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _b
 
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     c_temp = _closest_temp(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
-    model_path = os.path.join(D_path, 't' + c_temp + 'g' + str(float(surf_g)) + 'm' + _name_add(met))
+    if D == 'marcs':
+        model_path = os.path.join(D_path, 't' + c_temp + 'g' + _name_add(surf_g) + 'm' + _name_add(met))
+    else:
+        model_path = os.path.join(D_path, 't' + c_temp + 'g' + str(float(surf_g)) + 'm' + _name_add(met))
     return model_path
 
 def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1, data_path = None):
@@ -173,10 +181,14 @@ def read_all(D = '3D', a = 1.5, v = 1, data_path = None):
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     models = os.listdir(D_path)
     data = {}
+    if D == 'marcs':
+        a = 13
+    else:
+        a = 12
     for model in models:
         eff_t = float(model[1:8])
-        surf_g = float(model[9:12])
-        met = float(model[13:])
+        surf_g = float(model[9:a])
+        met = float(model[a+1:])
         data[eff_t, surf_g, met] = read_all_abund(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     return data
 

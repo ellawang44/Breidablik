@@ -1,6 +1,7 @@
 from breidablik.analysis import read
 from breidablik.analysis import tools
 from breidablik.interpolate.grid_check import _grid_check
+from breidablik.interpolate.scalar import Scalar()
 import joblib
 import numpy as np
 from pathlib import Path
@@ -28,7 +29,8 @@ class Spectra:
         model_path = model_path or _base_path.parent / 'models/mlp.pkl'
         scalar_path = scalar_path or _base_path.parent / 'models/mlp_scalar.pkl'
         # load models
-        self.scalar = joblib.load(scalar_path)
+        self.scalar = Scalar()
+        self.scalar.load(scalar_path)
         self.models = joblib.load(model_path)
         self.relative_error = 1e-14
         self.cut_models = None
