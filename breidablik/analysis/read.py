@@ -1,3 +1,5 @@
+## even though D == 'marcs' appears in this file. This data is not public. The functions in this does read in the private marcs data grid into the same format as the other grids though.
+
 import math
 import numpy as np
 import os

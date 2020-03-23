@@ -45,8 +45,8 @@ class Test_find_abund:
         with warnings.catch_warnings(record = True) as w:
             warnings.simplefilter('always')
             Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, method = 'chisq', prior = [1, 2, 3], abunds = [1, 2, 3])
-            Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, prior = [1, 2, 3])
-            Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, abunds = [1, 2, 3])
+            Test_find_abund.models.find_abund([600, 700], [1, 0.9], [0.5, 0.5], 5000, 2.5, -2, prior = [1, 2, 3])
+            Test_find_abund.models.find_abund([600, 700], [1, 0.9], [0.5, 0.5], 5000, 2.5, -2, abunds = [1, 2, 3])
             assert len(w) == 3
             for i in range(len(w)):
                 assert issubclass(w[i].category, UserWarning)

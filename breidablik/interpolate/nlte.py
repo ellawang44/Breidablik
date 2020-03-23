@@ -54,8 +54,8 @@ class Nlte:
         # warn if stellar parameters are too far outside the edge of the grid
         _grid_check(eff_t, surf_g, met)
 
-        # warn if abundance is too far outside the grid range
-        if (abundance < -0.75) or (abundance > 4.25):
+        # warn if abundance is outside the grid range
+        if (abundance < -0.5) or (abundance > 4):
             warnings.warn('Input abundance is outside of the grid, results are extrapolated and may not be reliable.')
 
         predicted_li = self._nlte_correction(eff_t, surf_g, met, [abundance], center = center)[0]

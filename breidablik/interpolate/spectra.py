@@ -146,7 +146,7 @@ class Spectra:
             abundance = self._window_search(wavelength, flux, flux_err, eff_t, surf_g, met, accuracy = accuracy, min_abund = min_abund, max_abund = max_abund, initial_accuracy = initial_accuracy)
 
         # warn if predicted Li is outside of grid
-        if (abundance < -0.75) or (abundance > 4.25):
+        if (abundance < -0.5) or (abundance > 4):
             warnings.warn('Predicted lithium abundance is outside of the grid, results are extrapolated and may not be reliable.')
 
         return (abundance, err)
@@ -297,8 +297,8 @@ class Spectra:
             raise ValueError('The input effective temperature, surface gravity, metallicity, or abundance is not in the right format, they all need to be scalar numbers, detected inputs: eff_t = {}, surf_g = {}, met = {}, and abund = {}'.format(eff_t, surf_g, met, abundance))
         # warn if stellar parameters are too far outside the edge of the grid
         _grid_check(eff_t, surf_g, met)
-        # warn if abundance is too far outside the grid range
-        if (abundance < -0.75) or (abundance > 4.25):
+        # warn if abundance is outside the grid range
+        if (abundance < -0.5) or (abundance > 4):
             warnings.warn('Input abundance is outside of the grid, results are extrapolated and may not be reliable.')
 
         return self._predict_flux(eff_t, surf_g, met, [abundance], user_call = True)[0]
