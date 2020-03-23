@@ -137,7 +137,8 @@ setup(
                       'numpy>=1.15',
                       'scikit-learn>=0.21',
                       'scipy>=1.3',
-                      'pytest>=3.5'],  # Optional
+                      'pytest>=3.5',
+                      'pykrige>=1.4'],  # Optional
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
