@@ -32,17 +32,13 @@ def _closest_temp(temperature, surf_g, met, D = '3D', a = 1.5, v = 1, data_path 
 
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     all_models = [f for f in os.listdir(D_path)]
-    # get numbers
-    if D == 'marcs':
-        a = 13
-    else:
-        a = 12
-    possible_temps = list(set([float(mod[1:8]) for mod in all_models if float(mod[9:a]) == surf_g and float(mod[a+1:]) == met])) # remove duplicates
+    possible_temps = list(set([float(mod[1:8]) for mod in all_models if float(mod[9:13]) == surf_g and float(mod[14:]) == met])) # remove duplicates
     temp = str(possible_temps[np.argmin(np.abs(np.array(possible_temps) - temperature))])
     while len(temp) < 7:
         temp = temp + '0'
-    if abs(float(temp) - temperature) > 250:
-        warnings.warn('closest temp is more than 250 K away from the input temperature. Returned closest model. The temperature snapped to: {}'.format(temp))
+    if D != 'marcs':
+        if abs(float(temp) - temperature) > 250:
+            warnings.warn('closest temp is more than 250 K away from the input temperature. Returned closest model. The temperature snapped to: {}'.format(temp))
     return temp
 
 def _get_model_path(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _base_path.parent / 'Balder'):
@@ -52,9 +48,11 @@ def _get_model_path(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _b
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     c_temp = _closest_temp(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     if D == 'marcs':
-        model_path = os.path.join(D_path, 't' + c_temp + 'g' + _name_add(surf_g) + 'm' + _name_add(met))
+        if int(eff_t) != eff_t:
+            raise ValueError('Decimal effective temperatures not accepted for the MARCS grid.')
+        model_path = os.path.join(D_path, 't' + str(int(eff_t)) + '.00g' + _name_add(surf_g) + 'm' + _name_add(met))
     else:
-        model_path = os.path.join(D_path, 't' + c_temp + 'g' + str(float(surf_g)) + 'm' + _name_add(met))
+        model_path = os.path.join(D_path, 't' + c_temp + 'g' + _name_add(surf_g) + 'm' + _name_add(met))
     return model_path
 
 def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1, data_path = None):
@@ -181,14 +179,10 @@ def read_all(D = '3D', a = 1.5, v = 1, data_path = None):
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     models = os.listdir(D_path)
     data = {}
-    if D == 'marcs':
-        a = 13
-    else:
-        a = 12
     for model in models:
         eff_t = float(model[1:8])
-        surf_g = float(model[9:a])
-        met = float(model[a+1:])
+        surf_g = float(model[9:13])
+        met = float(model[13+1:])
         data[eff_t, surf_g, met] = read_all_abund(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
     return data
 

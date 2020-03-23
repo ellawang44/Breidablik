@@ -1,6 +1,6 @@
+from breidablik.interpolate import load
 from breidablik.interpolate.grid_check import _grid_check
 from breidablik.interpolate.scalar import Scalar
-import joblib
 import numpy as np
 from pathlib import Path
 import warnings
@@ -23,12 +23,13 @@ class Rew:
         """
 
         # set default paths
-        model_path = model_path or _base_path.parent / 'models/rew.pkl'
-        scalar_path = scalar_path or _base_path.parent / 'models/rew_scalar.pkl'
+        model_path = model_path or _base_path.parent / 'models/rew'
+        scalar_path = scalar_path or _base_path.parent / 'models/rew/scalar.npy'
         # load models
         scalar = Scalar()
-        self.models = [None, joblib.load(model_path), None]
-        self.scalars = [None, scalar.load(scalar_path), None]
+        scalar.load(scalar_path)
+        self.models = [None, load.load(model_path), None]
+        self.scalars = [None, scalar, None]
 
     def find_abund(self, eff_t, surf_g, met, rew, center = 670.9659):
         """Find the abundance based on the stellar parameters and measured reduced equivalent width.

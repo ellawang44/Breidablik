@@ -1,1 +1,1 @@
-__all__ = ["spectra", "rew", 'nlte']
+__all__ = ["spectra", "rew", "nlte", "load", "scalar"]

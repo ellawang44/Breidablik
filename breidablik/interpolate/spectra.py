@@ -1,9 +1,10 @@
 from breidablik.analysis import read
 from breidablik.analysis import tools
 from breidablik.interpolate.grid_check import _grid_check
-from breidablik.interpolate.scalar import Scalar()
+from breidablik.interpolate.scalar import Scalar
 import joblib
 import numpy as np
+import os
 from pathlib import Path
 from scipy.interpolate import CubicSpline
 import warnings
@@ -14,26 +15,30 @@ class Spectra:
     """Interpolation class for spectra. Used to interpolate between the stellar parameters. Can find the abundance of an input flux given the stellar parameters. Can also predict a flux from the stellar parameters and abundance.
     """
 
-    def __init__(self, model_path = None, scalar_path = None):
+    def __init__(self, model_path = None, scalar_path = None, save_num = 1):
         """Initialise the data by loading the pickled models and scalar.
 
         Parameters
         ----------
         model_path : str, optional
-            The path to the model to be used to predict the flux. By default, this path points to ``models/mlp.pkl`` in ``breidablik``.
+            The path to the model to be used to predict the flux. By default, this path points to ``models/kri`` in ``breidablik``.
         scalar_path : str, optional
-            The path to the scalar corresponding to the model. By default, this path points to ``models/mlp_scalar.pkl`` in ``breidablik``.
+            The path to the scalar corresponding to the model. By default, this path points to ``models/kri/scalar.npy`` in ``breidablik``.
+        save_num : int
+            The number of cubic spline models to save. This makes the code run faster, but takes memory. Only worth increasing if you are analysing different observations of multiple stars.
         """
 
         # set default paths
-        model_path = model_path or _base_path.parent / 'models/mlp.pkl'
-        scalar_path = scalar_path or _base_path.parent / 'models/mlp_scalar.pkl'
+        model_path = model_path or _base_path.parent / 'models/kri'
+        scalar_path = scalar_path or _base_path.parent / 'models/kri/scalar.npy'
         # load models
         self.scalar = Scalar()
         self.scalar.load(scalar_path)
-        self.models = joblib.load(model_path)
-        self.relative_error = 1e-14
+        self.models = joblib.load(os.path.join(model_path, 'kri.pkl'))
+        self.relative_error = np.load(os.path.join(model_path, 'relative_err.npy'), allow_pickle = False)
         self.cut_models = None
+        self.saved_cspline = {}
+        self.saved_cut_cspline = {}
 
     def find_abund(self, wavelength, flux, flux_err, eff_t, surf_g, met, accuracy = 1e-4, method = 'bayes', min_abund = -0.5, max_abund = 4, initial_accuracy = 1e-1, abunds = None, prior = None):
         """Finds the abundance of the spectrum.
@@ -113,7 +118,9 @@ class Spectra:
         inds = np.where(mask == True)[0]
         ind_l = inds[0]
         ind_u = inds[-1]+1
-        self.cut_models = self.models[ind_l:ind_u]
+        self.cut_models = {}
+        for abund in list(self.models):
+            self.cut_models[abund] = self.models[abund][ind_l:ind_u]
 
         err = None
         if method == 'bayes':
@@ -302,10 +309,57 @@ class Spectra:
         Also, you can call this version with a list of abundances. It's faster if you call this function with a list of abundances vs calling the user visible one with a for-loop over abundances. Vroom vroom.
         """
 
-        transformed_input = self.scalar.transform([[eff_t, surf_g, met, abund] for abund in abundance])
         if (self.cut_models is not None) and (not user_call): # only predict a range of models
-            predicted = np.array([model.predict(transformed_input) for model in self.cut_models]).T
+            saved_cspline = self.saved_cut_cspline
+            cut = True
         else: # predict all models
-            predicted = np.array([model.predict(transformed_input) for model in self.models]).T
+            saved_cspline = self.saved_cspline
+            cut = False
+
+        if (eff_t, surf_g, met) in list(saved_cspline): # if the cubic spline is already saved
+            splines = saved_cspline[eff_t, surf_g, met]
+        else: # if new stellar parameters
+            splines = self._create_cspline(eff_t, surf_g, met, cut = cut)
+
+        # evaluate the splines at the desired abundances
+        predicted = np.array([s(abundance) for s in splines]).T
         predicted = 1 + self.relative_error - 10**predicted
+
         return predicted
+
+    def _create_cspline(self, eff_t, surf_g, met, cut = True):
+        """Creates a cubic spline for each abundance for the input stellar parameters. The pixels for which these cubic splines are created over is determined by cut.
+        """
+
+        # get correct models and cubic splines
+        if cut:
+            models = self.cut_models
+            cspline = self.saved_cut_cspline
+        else:
+            models = self.models
+            cspline = self.saved_cspline
+
+        # transform input
+        transformed_input = self.scalar.transform([[eff_t, surf_g, met]])[0]
+
+        # evaluating the models for the input stellar parameters
+        abunds = list(models)
+        grid_spec = []
+        for a in abunds:
+            spec = []
+            for m in models[a]:
+                try: # can't train on outputs that are all the same
+                    point = m.execute('points', *transformed_input, backend = 'loop')[0][0]
+                except AttributeError: # append the value in that case
+                    point = m
+                spec.append(point)
+            grid_spec.append(spec)
+        grid_spec = np.array(grid_spec).T
+
+        # create splines over abundances
+        splines = []
+        for spec in grid_spec:
+            splines.append(CubicSpline(abunds, spec))
+        cspline[eff_t, surf_g, met] = splines
+
+        return splines

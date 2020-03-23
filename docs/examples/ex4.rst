@@ -30,4 +30,4 @@ Next, we load in the models by initialising the class, then call the function ``
   abund = model.find_abund(t_eff, log_g, met, REW)
   print(abund)
 
-Which returns an abundance of 1.702 dex.
+Which returns an abundance of 1.70 dex.
