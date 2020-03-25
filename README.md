@@ -1,5 +1,5 @@
 # Breidablik
-An interpolation routine and abundance predictor wrapper around stellar spectra for lithium generated from Balder (Amarsi et al. 2016) and the Stagger-grid (Magic et al. 2013). The raw synthetic spectra and models can be found on http://www.mso.anu.edu.au/~ellawang/. We use `scikit-learn` to interpolate between stellar parameters and lithium abundance inputs to generate interpolated synthetic spectra, these interpolation models are provided as part of the package. Using the interpolation routine, we can predict the lithium profile given any stellar parameters and lithium abundance input, we can also predict the lithium abundance given an observed spectrum and stellar parameters.
+An interpolation routine and abundance predictor wrapper around stellar spectra for lithium generated from Balder (Amarsi et al. 2016) and the Stagger-grid (Magic et al. 2013). The raw synthetic spectra and models can be found on http://www.mso.anu.edu.au/~ellawang/. We use `pyKrige` to interpolate between stellar parameters and lithium abundance inputs to generate interpolated stellar line profiles; and `scikit-learn` to interpolate between stellar parameters and stellar line strengths, these interpolation models are provided as part of the package. Using the interpolation routine, we can predict the lithium profile given any stellar parameters and lithium abundance input, we can also predict the lithium abundance given an observed spectrum and stellar parameters.
 
 ## Installation
 ### Install with pip
@@ -38,7 +38,11 @@ Optional, to check that the installation was successful, in the `Breidablik` fol
 ```
 python -m pytest
 ```
-If all tests pass with no warnings, then the installation was successful.
+If all tests pass with no warnings, then the installation was successful. If you have installed this package through `pip`, you can still run the tests, but instead this will need to be done in the `breidablik` folder installed by `pip`.
 
 ## Getting Started
 See the examples at https://breidablik.readthedocs.io/en/latest/Getting%20Started.html#examples
+
+
+## License and Citation
+These data are still preliminary and will be presented in a forthcoming paper (Wang et al.). As they are still in a testing stage, please contact me (xi.wang3@anu.ed.au) if you use them. I am interested in how you use the data and if you find any issues. Even if everything seems to work fine, I'd still be interested in hearing from you.
