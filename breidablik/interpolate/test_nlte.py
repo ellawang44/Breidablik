@@ -34,4 +34,4 @@ class Test_nlte_correction:
     def test_diff_line(self):
         nltec_670 = Test_nlte_correction.models.nlte_correction(5000, 4.5, -1, 2.1, center = 670)
         nltec_610 = Test_nlte_correction.models.nlte_correction(5000, 4.5, -1, 2.1, center = 610)
-        assert abs(nltec_670 - nltec_610) < 1e-5
+        assert abs(nltec_670 - nltec_610) > 1e-5

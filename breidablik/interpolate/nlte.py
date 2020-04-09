@@ -11,7 +11,7 @@ class Nlte:
     """Interpolation class for REW. Used to interpolate between the stellar parameters. Can find the abundance given the REW and stellar parameters.
     """
 
-    def __init__(self, model_path = None, scalar_path = None):
+    def __init__(self, model_path = None, scalar_path = None, model_path_610 = None, scalar_path_610 = None, model_path_810 = None, scalar_path_810 = None):
         """Initialise the data by reading the pickled models and scalar.
 
         Parameters
@@ -25,10 +25,10 @@ class Nlte:
         # set default paths
         model_path = model_path or _base_path.parent / 'models/nlte'
         scalar_path = scalar_path or _base_path.parent / 'models/nlte/scalar.npy'
-        model_path_610 = model_path or _base_path.parent / 'models/nlte_610'
-        scalar_path_610 = scalar_path or _base_path.parent / 'models/nlte_610/scalar.npy'
-        model_path_810 = model_path or _base_path.parent / 'models/nlte_810'
-        scalar_path_810 = scalar_path or _base_path.parent / 'models/nlte_810/scalar.npy'
+        model_path_610 = model_path_610 or _base_path.parent / 'models/nlte_610'
+        scalar_path_610 = scalar_path_610 or _base_path.parent / 'models/nlte_610/scalar.npy'
+        model_path_810 = model_path_810 or _base_path.parent / 'models/nlte_810'
+        scalar_path_810 = scalar_path_810 or _base_path.parent / 'models/nlte_810/scalar.npy'
         # load models
         scalar = Scalar()
         scalar.load(scalar_path)
@@ -37,7 +37,7 @@ class Nlte:
         scalar_810 = Scalar()
         scalar_810.load(scalar_path_810)
         self.models = [load.load(model_path_610), load.load(model_path), load.load(model_path_810)]
-        self.scalars = [scalar_610, scalar, scalar_610]
+        self.scalars = [scalar_610, scalar, scalar_810]
 
     def nlte_correction(self, eff_t, surf_g, met, abundance, center = 670.9659):
         """Find the abundance based on the stellar parameters and measured reduced equivalent width.

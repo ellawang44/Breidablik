@@ -34,4 +34,4 @@ class Test_find_abund:
     def test_diff_line(self):
         abund_670 = Test_find_abund.models.find_abund(5000, 4.5, -1, 2.1, center = 670)
         abund_610 = Test_find_abund.models.find_abund(5000, 4.5, -1, 2.1, center = 610)
-        assert abs(abund_670 - abund_610) < 1e-5
+        assert abs(abund_670 - abund_610) > 1e-5
