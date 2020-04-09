@@ -30,3 +30,8 @@ class Test_nlte_correction:
             Test_nlte_correction.models.nlte_correction(6000, 4.5, -2, 5)
             assert len(w) == 1
             assert issubclass(w[0].category, UserWarning)
+
+    def test_diff_line(self):
+        nltec_670 = Test_nlte_correction.models.nlte_correction(5000, 4.5, -1, 2.1, center = 670)
+        nltec_610 = Test_nlte_correction.models.nlte_correction(5000, 4.5, -1, 2.1, center = 610)
+        assert abs(nltec_670 - nltec_610) < 1e-5

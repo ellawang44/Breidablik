@@ -22,7 +22,7 @@ def _get_dimension_path(D = '3D', a = 1.5, v = 1, data_path = _base_path.parent 
     """Gets the path to the specified dimension.
     """
 
-    if D == '3D' or D == 'marcs':
+    if D == '3D' or D == 'marcs' or D == 'marcs08':
         D_path = os.path.join(data_path, D)
     elif D == '1D':
         D_path = os.path.join(data_path, '1D_a' + str(float(a)) + '_v' + str(float(v)))
@@ -38,7 +38,7 @@ def _closest_temp(temperature, surf_g, met, D = '3D', a = 1.5, v = 1, data_path 
     temp = str(possible_temps[np.argmin(np.abs(np.array(possible_temps) - temperature))])
     while len(temp) < 7:
         temp = temp + '0'
-    if D != 'marcs':
+    if D != 'marcs' and D != 'marcs08':
         if abs(float(temp) - temperature) > 250:
             warnings.warn('closest temp is more than 250 K away from the input temperature. Returned closest model. The temperature snapped to: {}'.format(temp))
     return temp
@@ -49,7 +49,7 @@ def _get_model_path(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _b
 
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     c_temp = _closest_temp(eff_t, surf_g, met, D = D, a = a, v = v, data_path = data_path)
-    if D == 'marcs':
+    if D == 'marcs' or D == 'marcs08':
         if int(eff_t) != eff_t:
             raise ValueError('Decimal effective temperatures not accepted for the MARCS grid.')
         model_path = os.path.join(D_path, 't' + str(int(eff_t)) + '.00g' + _name_add(surf_g) + 'm' + _name_add(met))

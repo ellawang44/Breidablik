@@ -31,3 +31,5 @@ Next, we load in the models by initialising the class, then call the function ``
   print(abund)
 
 Which returns an abundance of 1.70 dex.
+
+`find_abund` accepts a parameter: `center`, that determines which model is used: there are 3 models, 1 for each Li line. The 3 lithium lines are centered at 610.5298, 670.9659, and 812.8606 nm. The input center value will snap to the closest value out of those 3. By default, the 670.9 nm model is used.

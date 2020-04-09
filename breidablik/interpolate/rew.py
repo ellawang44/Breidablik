@@ -25,11 +25,19 @@ class Rew:
         # set default paths
         model_path = model_path or _base_path.parent / 'models/rew'
         scalar_path = scalar_path or _base_path.parent / 'models/rew/scalar.npy'
+        model_path_610 = model_path or _base_path.parent / 'models/rew_610'
+        scalar_path_610 = scalar_path or _base_path.parent / 'models/rew_610/scalar.npy'
+        model_path_810 = model_path or _base_path.parent / 'models/rew_810'
+        scalar_path_810 = scalar_path or _base_path.parent / 'models/rew_810/scalar.npy'
         # load models
         scalar = Scalar()
         scalar.load(scalar_path)
-        self.models = [None, load.load(model_path), None]
-        self.scalars = [None, scalar, None]
+        scalar_610 = Scalar()
+        scalar_610.load(scalar_path_610)
+        scalar_810 = Scalar()
+        scalar_810.load(scalar_path_810)
+        self.models = [load.load(model_path_610), load.load(model_path), load.load(model_path_810)]
+        self.scalars = [scalar_610, scalar, scalar_610]
 
     def find_abund(self, eff_t, surf_g, met, rew, center = 670.9659):
         """Find the abundance based on the stellar parameters and measured reduced equivalent width.
@@ -52,8 +60,6 @@ class Rew:
         predcited_li : float
             The predicted lithium abundance.
         """
-
-        # TODO: add working with different line centers
 
         # check the input stellar parameters and abundance
         if not ((np.array(eff_t).shape == ()) and (np.array(surf_g).shape == ()) and (np.array(met).shape == ()) and (np.array(rew).shape == ())):

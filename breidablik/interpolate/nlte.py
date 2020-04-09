@@ -25,11 +25,19 @@ class Nlte:
         # set default paths
         model_path = model_path or _base_path.parent / 'models/nlte'
         scalar_path = scalar_path or _base_path.parent / 'models/nlte/scalar.npy'
+        model_path_610 = model_path or _base_path.parent / 'models/nlte_610'
+        scalar_path_610 = scalar_path or _base_path.parent / 'models/nlte_610/scalar.npy'
+        model_path_810 = model_path or _base_path.parent / 'models/nlte_810'
+        scalar_path_810 = scalar_path or _base_path.parent / 'models/nlte_810/scalar.npy'
         # load models
         scalar = Scalar()
         scalar.load(scalar_path)
-        self.models = [None, load.load(model_path), None]
-        self.scalars = [None, scalar, None]
+        scalar_610 = Scalar()
+        scalar_610.load(scalar_path_610)
+        scalar_810 = Scalar()
+        scalar_810.load(scalar_path_810)
+        self.models = [load.load(model_path_610), load.load(model_path), load.load(model_path_810)]
+        self.scalars = [scalar_610, scalar, scalar_610]
 
     def nlte_correction(self, eff_t, surf_g, met, abundance, center = 670.9659):
         """Find the abundance based on the stellar parameters and measured reduced equivalent width.
@@ -45,8 +53,6 @@ class Nlte:
         center : Real, optional
             The center of the lithium line that the input rew corresponds to, in angstroms. The 3 lithium lines are centered at 610.5298, 670.9659, and 812.8606 nm in the Balder results. The input center value will snap to the closest value out of those 3.
         """
-
-        # TODO: add working with different line centers
 
         # check the input stellar parameters and abundance
         if not ((np.array(eff_t).shape == ()) and (np.array(surf_g).shape == ()) and (np.array(met).shape == ()) and (np.array(abundance).shape == ())):
