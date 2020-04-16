@@ -29,7 +29,6 @@ class Rew:
         scalar_path_610 = scalar_path_610 or _base_path.parent / 'models/rew_610/scalar.npy'
         model_path_810 = model_path_810 or _base_path.parent / 'models/rew_810'
         scalar_path_810 = scalar_path_810 or _base_path.parent / 'models/rew_810/scalar.npy'
-        print(model_path, model_path_610, model_path_810)
         # load models
         scalar = Scalar()
         scalar.load(scalar_path)
