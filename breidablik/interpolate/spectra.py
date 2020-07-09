@@ -48,7 +48,7 @@ class Spectra:
         wavelength : List[Real] or 1darray
             The wavelengths that correspond to the flux. Needs to be monotonically increasing.
         flux : List[Real] or 1darray
-            The flux that the abunance will be found for. Needs to be the same length as wavelength.
+            The flux that the abundance will be found for. Needs to be the same length as wavelength.
         flux_err : List[Real] or 1darray
             The error in each flux point. Needs to be the same length as wavelength.
         eff_t : Real
@@ -257,8 +257,8 @@ class Spectra:
 
         xdata = np.array(xdata)
         ydata = np.array(ydata)
-        p_data_given_model = 1/np.sqrt(2*np.pi*sigma**2)*np.e**(-(ydata - model(xdata))**2/(2*sigma**2)) + 1e-5 # sometimes the probability is 0
-        posterior = np.sum(np.log(p_data_given_model)) + np.log(prior + 1e-5) # we don't normalise the probabilities, so to avoid overflow we log
+        ln_p_data_given_model = np.sum(-(ydata - model(xdata))**2/(2*sigma**2))
+        posterior = ln_p_data_given_model + np.log(prior) 
         return posterior
 
     def _chisq(self, wavelength, flux, flux_err, abunds, eff_t, surf_g, met):
