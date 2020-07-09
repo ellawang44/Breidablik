@@ -25,7 +25,7 @@ class Spectra:
         scalar_path : str, optional
             The path to the scalar corresponding to the model. By default, this path points to ``models/kri/scalar.npy`` in ``breidablik``.
         save_num : int
-            The number of cubic spline models to save. This makes the code run faster, but takes memory. Only worth increasing if you are analysing different observations of multiple stars.
+            The number of cubic spline models to save. This makes the code run faster, but takes memory. Only worth increasing if you are repeatedly analysing different observations of multiple stars.
         """
 
         # set default paths
@@ -36,6 +36,7 @@ class Spectra:
         self.scalar.load(scalar_path)
         self.models = joblib.load(os.path.join(model_path, 'kri.pkl'))
         self.relative_error = np.load(os.path.join(model_path, 'relative_err.npy'), allow_pickle = False)
+        self.save_num = save_num
         self.cut_models = None
         self.saved_cspline = {}
         self.saved_cut_cspline = {}
@@ -360,6 +361,10 @@ class Spectra:
         splines = []
         for spec in grid_spec:
             splines.append(CubicSpline(abunds, spec))
+        
+        # save in dictionary and remove exceeded number
+        if len(list(cspline)) + 1 > self.save_num:
+            del cspline[list(cspline)[0]]
         cspline[eff_t, surf_g, met] = splines
 
         return splines
