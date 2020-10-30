@@ -45,4 +45,4 @@ See the examples at https://breidablik.readthedocs.io/en/latest/Getting%20Starte
 
 
 ## License and Citation
-These data are still preliminary and will be presented in a forthcoming paper (Wang et al.). As they are still in a testing stage, please contact me (xi.wang3@anu.ed.au) if you use them. I am interested in how you use the data and if you find any issues. Even if everything seems to work fine, I'd still be interested in hearing from you.
+If you use this package for any academic purpose, please cite Wang et al. 2020 (arXiv:2010.15248).
