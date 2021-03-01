@@ -34,6 +34,7 @@ If the above automatic installation did not work for you, then to install withou
 4. Download the raw data from `balder.zip` on http://www.mso.anu.edu.au/~ellawang/ and unzip it.
 5. Optional, add this directory to the python path. This makes the directory findable by python no matter where it is launched.
 
+### Check that your installation is correct
 Optional, to check that the installation was successful, in the `Breidablik` folder, you can run:
 ```
 python -m pytest
