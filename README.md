@@ -10,6 +10,8 @@ git clone https://github.com/ellawang44/Breidablik
 cd Breidablik
 ./install_pip
 ```
+Once the installation is done, you can delete this repository.
+
 #### Manual
 If the above automatic installation did not work for you, then to install with `pip`, there are 3 steps:
 1. Install Breidablik through `pip`. This will install Breidablik _without_ the raw synthetic spectra.  
@@ -24,7 +26,6 @@ git clone https://github.com/ellawang44/Breidablik
 cd Breidablik
 ./install
 ```
-Once the installation is done, you can delete this repository.
 
 #### Manual
 If the above automatic installation did not work for you, then to install without using `pip`, there are 5 steps:
