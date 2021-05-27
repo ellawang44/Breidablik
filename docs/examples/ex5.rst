@@ -1,4 +1,4 @@
-Example 5: Get NLTE correction
+Example 5: Get 3D NLTE correction
 ==============================
 
 About
