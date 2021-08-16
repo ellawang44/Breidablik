@@ -31,18 +31,13 @@ class Scalar:
         self.mean = np.mean(data, axis = 0)
         self.std = np.std(data, axis = 0)
 
-    def transform(self, data):
-        """Scale input data.
+    def _check(self, data):
+        """Check that the input data is valid data.
 
         Parameters
         ----------
         data : 2darray
             Needs to be in the form [num of objects x num of parameters].
-
-        Returns
-        -------
-        scaled_data : 2darray
-            The scaled data in the form [num of objects x num of parameters].
         """
 
         # make sure there is a fitted scalar
@@ -63,8 +58,43 @@ class Scalar:
         if data.shape[1] != len(self.mean):
             raise ValueError('Data to be transformed must have the same number of columns as the fitted data.')
 
+    def transform(self, data):
+        """Scale input data.
+
+        Parameters
+        ----------
+        data : 2darray
+            Needs to be in the form [num of objects x num of parameters].
+
+        Returns
+        -------
+        scaled_data : 2darray
+            The scaled data in the form [num of objects x num of parameters].
+        """
+
+        self._check(data) # check data is valid
+
         scaled_data = (data - self.mean)/self.std
         return scaled_data
+
+    def untransform(self, data):
+        """Unscale input data.
+
+        Parameters
+        ----------
+        data : 2darray
+            Needs to be in the form [num of objects x num of parameters].
+
+        Returns
+        -------
+        unscaled_data : 2darray
+            The unscaled data in the form [num of objects x num of parameters].
+        """
+
+        self._check(data) # check data is valid
+
+        unscaled_data = data*self.std + self.mean 
+        return unscaled_data
 
     def save(self, name):
         """Save scalar
