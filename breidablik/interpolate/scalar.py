@@ -123,4 +123,4 @@ class Scalar:
         if not os.path.isfile(path):
             raise FileNotFoundError('Attempted to load a scalar not found, path given: {}'.format(path))
         else:
-            self.mean, self.std = np.loadtxt(name)
+            self.mean, self.std = np.load(name)
