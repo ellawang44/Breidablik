@@ -123,7 +123,4 @@ class Scalar:
         if not os.path.isfile(path):
             raise FileNotFoundError('Attempted to load a scalar not found, path given: {}'.format(path))
         else:
-            try:
-                self.mean, self.std = np.load(name)
-            except ValueError: #TODO: should fix this eventually, some scalars are old and saved via savetxt 
-                self.mean, self.std = np.loadtxt(name)
+            self.mean, self.std = np.load(name)
