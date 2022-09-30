@@ -133,7 +133,7 @@ setup(
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['hypothesis>=4.17',
-                      'joblib==0.13',
+                      'joblib==1.2.0',
                       'numpy>=1.15',
                       'scikit-learn==0.21',
                       'scipy>=1.3',
