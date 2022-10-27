@@ -42,4 +42,4 @@ Now we can see what lithium abundance the model predicts the Sun has - for this 
   abund, errs = models.find_abund(wl, flux, flux_err, t_eff, log_g, met)
   print(abund, errs)
 
-Checking the value of ``abund``, we have that the predicted abundance is 1.09 dex with a negative error of -0.03 dex and positive error of 0.02 dex, which is not a bad prediction considering that 1.1 dex was simulated and the flux error was relatively large.
+Checking the value of ``abund``, we have that the predicted abundance is 1.08 dex with a negative error of -0.03 dex and positive error of 0.02 dex, which is not a bad prediction considering that 1.1 dex was simulated.

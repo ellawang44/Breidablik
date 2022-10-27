@@ -2,7 +2,6 @@ from breidablik.analysis import read
 from breidablik.analysis import tools
 from breidablik.interpolate.grid_check import _grid_check
 from breidablik.interpolate.scalar import Scalar
-import joblib
 import numpy as np
 import os
 from pathlib import Path
@@ -29,17 +28,16 @@ class Spectra:
         """
 
         # set default paths
-        model_path = model_path or _base_path.parent / 'models/kri'
-        scalar_path = scalar_path or _base_path.parent / 'models/kri/scalar.npy'
+        model_path = model_path or _base_path.parent / 'models1/rbf'
+        scalar_path = scalar_path or _base_path.parent / 'models1/rbf/scalar.npy'
         # load models
         self.scalar = Scalar()
         self.scalar.load(scalar_path)
-        self.models = joblib.load(os.path.join(model_path, 'kri.pkl'))
+        self.models = np.load(os.path.join(model_path, 'rbf.npy'))
+        self.X = np.load(os.path.join(model_path, 'X.npy'))
         self.relative_error = np.load(os.path.join(model_path, 'relative_err.npy'), allow_pickle = False)
         self.save_num = save_num
         self.cut_models = None
-        self.saved_cspline = {}
-        self.saved_cut_cspline = {}
 
     def find_abund(self, wavelength, flux, flux_err, eff_t, surf_g, met, accuracy = 1e-4, method = 'bayes', min_abund = -0.5, max_abund = 4, initial_accuracy = 1e-1, abunds = None, prior = None):
         """Finds the abundance of the spectrum.
@@ -119,9 +117,7 @@ class Spectra:
         inds = np.where(mask == True)[0]
         ind_l = inds[0]
         ind_u = inds[-1]+1
-        self.cut_models = {}
-        for abund in list(self.models):
-            self.cut_models[abund] = self.models[abund][ind_l:ind_u]
+        self.cut_models = self.models[ind_l:ind_u]
 
         err = None
         if method == 'bayes':
@@ -142,7 +138,7 @@ class Spectra:
                     abundance = abunds[np.argmax(probs)]
             # if there is no prior
             else:
-                abundance, err = self._coarse_search(wavelength, flux, flux_err, eff_t, surf_g, met, min_abund = min_abund, max_abund = max_abund, accuracy = accuracy)
+                abundance, err = self._coarse_search(wavelength, flux, flux_err, eff_t, surf_g, met, min_abund = min_abund, max_abund = max_abund, accuracy = accuracy, initial_accuracy=initial_accuracy)
         else:
             abundance = self._window_search(wavelength, flux, flux_err, eff_t, surf_g, met, accuracy = accuracy, min_abund = min_abund, max_abund = max_abund, initial_accuracy = initial_accuracy)
 
@@ -183,38 +179,45 @@ class Spectra:
         probs = self._bayesian_inference(wavelength, flux, flux_err, eff_t, surf_g, met, abunds)
 
         tolerance = 1e-5
-        # not a flat line
-        if (probs > tolerance).any():
-            # if we have found the pdf
-            if (probs[0] < tolerance) and (probs[-1] < tolerance):
-                # find smallest range of abundances we can feed into bayesian inference
-                max_ind = np.argmax(probs)
-                left = probs[:max_ind]
-                l_ind = len(left[left<=tolerance]) - 1
-                right = probs[max_ind+1:]
-                r_ind = len(probs) - len(right[right<=tolerance])
-                # find pdf
-                fine_abunds = np.arange(abunds[l_ind], abunds[r_ind] + accuracy/2, accuracy)
-                fine_probs = self._bayesian_inference(wavelength, flux, flux_err, eff_t, surf_g, met, fine_abunds)
-                return self._calc_bayes_err(fine_abunds, fine_probs)
-            # if we haven't found the pdf
-            half = (max_abund - min_abund)/2
-            # if we have found left half the pdf
-            if (probs[0] < tolerance) and (probs[-1] > tolerance):
-                l_half = 0
-                r_half = half
-            # if we have found right half of the pdf
-            elif (probs[0] > tolerance) and (probs[-1] < tolerance):
-                l_half = half
-                r_half = 0
-            # if we have found the peak but not the edges
-            else:
-                l_half = half
-                r_half = half
-            return self._coarse_search(wavelength, flux, flux_err, eff_t, surf_g, met, min_abund - l_half, max_abund + r_half, accuracy = accuracy, initial_accuracy = initial_accuracy)
-        # if we have not found the pdf
-        else:
+
+        # flat line, answer not in given region
+        if (probs < tolerance).all():
             raise ValueError('Either the actual abundance of the spectra is not between the min_abund and max_abund, or the initial_accuracy value is too large. Try finding the actual abundance through the chisq method, if this abundance is between the min_abund and max_abund, then make the initial_accuracy smaller. Detected inputs: min_abund = {}, max_abund = {}, initial_accuracy = {}'.format(min_abund, max_abund, initial_accuracy))
+
+        # if we have found the pdf
+        if (probs[0] < tolerance) and (probs[-1] < tolerance):
+            # find smallest range of abundances we can feed into bayesian inference
+            max_ind = np.argmax(probs)
+            left = probs[:max_ind]
+            l_ind = len(left[left<=tolerance]) - 1
+            right = probs[max_ind+1:]
+            r_ind = len(probs) - len(right[right<=tolerance])
+            if r_ind - l_ind == 2: # found delta function
+                # this is done so not too many values are passed onto the bayesian function
+                return self._coarse_search(wavelength, flux, flux_err, eff_t, surf_g, met, abunds[l_ind], abunds[r_ind], accuracy = accuracy, initial_accuracy = initial_accuracy/10)
+            # find pdf
+            fine_abunds = np.arange(abunds[l_ind], abunds[r_ind] + accuracy/2, accuracy)
+            fine_probs = self._bayesian_inference(wavelength, flux, flux_err, eff_t, surf_g, met, fine_abunds)
+            return self._calc_bayes_err(fine_abunds, fine_probs)
+        # if we haven't found the pdf
+        half = (max_abund - min_abund)/2
+        # if we have found left half the pdf
+        if (probs[0] < tolerance) and (probs[-1] > tolerance):
+            l_half = 0
+            r_half = half
+        # if we have found right half of the pdf
+        elif (probs[0] > tolerance) and (probs[-1] < tolerance):
+            l_half = half
+            r_half = 0
+        # if we have found the peak but not the edges
+        else:
+            l_half = half
+            r_half = half
+        new_min_abund = min_abund - l_half
+        new_max_abund = max_abund + r_half
+        if new_min_abund < -0.5 or new_max_abund > 4:
+            raise ValueError('The abundance of input spectrum is too close to edge of allowed values to compute the lower/upper errors. Use chisq method instead.')
+        return self._coarse_search(wavelength, flux, flux_err, eff_t, surf_g, met, new_min_abund, new_max_abund, accuracy = accuracy, initial_accuracy = initial_accuracy)
 
     def _calc_bayes_err(self, abunds, probs):
         """Find the best abundance through bayesian inference and also calculate the error associated with this measurement.
@@ -236,7 +239,7 @@ class Spectra:
     def _bayesian_inference(self, wavelength, flux, flux_err, eff_t, surf_g, met, abunds, prior = None):
         """Use Bayesian optimisation to find the probability of the model (abundance) given data.
         """
-
+        
         probs = []
         guess_fluxes = self._predict_flux(eff_t, surf_g, met, abunds)
         if prior is None:
@@ -308,63 +311,31 @@ class Spectra:
         """Same as predict_flux. This is the hidden version without asserts for improved performance. The flux is only predicted in the region of the cut_models (where cut_models are determined by the input observed spectrum).
 
         Also, you can call this version with a list of abundances. It's faster if you call this function with a list of abundances vs calling the user visible one with a for-loop over abundances. Vroom vroom.
+
+        user_call : If the user calls this function, it will always predict the full spectrum, instead of using the cut section.
         """
 
         if (self.cut_models is not None) and (not user_call): # only predict a range of models
-            saved_cspline = self.saved_cut_cspline
-            cut = True
+            models = self.cut_models
         else: # predict all models
-            saved_cspline = self.saved_cspline
-            cut = False
+            models = self.models
+        
+        predicted = []
+        for abund in abundance:
+            sp = self.scalar.transform([[eff_t, surf_g, met, abund]])
+            mat = np.array([self._phi(self._dist(sp, val)) for val in self.X])
+            
+            # evaluate the splines at the desired abundances
+            predicted.append(np.array([mat @ wi for wi in models]))
 
-        if (eff_t, surf_g, met) in list(saved_cspline): # if the cubic spline is already saved
-            splines = saved_cspline[eff_t, surf_g, met]
-        else: # if new stellar parameters
-            splines = self._create_cspline(eff_t, surf_g, met, cut = cut)
-
-        # evaluate the splines at the desired abundances
-        predicted = np.array([s(abundance) for s in splines]).T
-        predicted = 1 + self.relative_error - 10**predicted
-
+        predicted = 1 + self.relative_error - 10**np.array(predicted)
+        
         return predicted
 
-    def _create_cspline(self, eff_t, surf_g, met, cut = True):
-        """Creates a cubic spline for each abundance for the input stellar parameters. The pixels for which these cubic splines are created over is determined by cut.
-        """
+    def _phi(self, r):
+        '''Phi function for distance transform'''
+        return np.square(r)*np.log(r)
 
-        # get correct models and cubic splines
-        if cut:
-            models = self.cut_models
-            cspline = self.saved_cut_cspline
-        else:
-            models = self.models
-            cspline = self.saved_cspline
-
-        # transform input
-        transformed_input = self.scalar.transform([[eff_t, surf_g, met]])[0]
-
-        # evaluating the models for the input stellar parameters
-        abunds = list(models)
-        grid_spec = []
-        for a in abunds:
-            spec = []
-            for m in models[a]:
-                try: # can't train on outputs that are all the same
-                    point = m.execute('points', *transformed_input, backend = 'loop')[0][0]
-                except AttributeError: # append the value in that case
-                    point = m
-                spec.append(point)
-            grid_spec.append(spec)
-        grid_spec = np.array(grid_spec).T
-
-        # create splines over abundances
-        splines = []
-        for spec in grid_spec:
-            splines.append(CubicSpline(abunds, spec))
-        
-        # save in dictionary and remove exceeded number
-        if len(list(cspline)) + 1 > self.save_num:
-            del cspline[list(cspline)[0]]
-        cspline[eff_t, surf_g, met] = splines
-
-        return splines
+    def _dist(self, r1, r2):
+        '''L2 distance metric'''
+        return np.sqrt(np.sum(np.square(r1-r2)))

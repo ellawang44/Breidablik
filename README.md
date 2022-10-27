@@ -42,6 +42,18 @@ python -m pytest
 ```
 If all tests pass with no warnings, then the installation was successful. If you have installed this package through `pip`, you can still run the tests, but instead this will need to be done in the `breidablik` folder installed by `pip`.
 
+## Updating the code
+The easiest way to update the code is by doing a clean install. 
+
+There are 3 components to Breidablik: synthetic spectra from Balder, trained models for interpolation, the code itself. 
+
+The synthetic spectra from Balder is downloaded once upon install, if there were updates to this, reinstall is recommended.
+
+The trained models for interpolation is downloaded upon manual install, but comes with the package if installed through pip. If you've installed the code manually, you will need to update the trained models manually.
+
+The code itself can be updated both through pip and git if you installed manually. 
+
+
 ## Getting Started
 See the examples at https://breidablik.readthedocs.io/en/latest/Getting%20Started.html#examples
 

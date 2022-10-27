@@ -45,9 +45,11 @@ class Test_find_abund:
         with warnings.catch_warnings(record = True) as w:
             warnings.simplefilter('always')
             Test_find_abund.models.find_abund([600, 700], [1, 0.5], [0.5, 0.5], 5000, 2.5, -2, method = 'chisq', prior = [1, 2, 3], abunds = [1, 2, 3])
-            Test_find_abund.models.find_abund([600, 700], [1, 0.9], [0.5, 0.5], 5000, 2.5, -2, prior = [1, 2, 3])
-            Test_find_abund.models.find_abund([600, 700], [1, 0.9], [0.5, 0.5], 5000, 2.5, -2, abunds = [1, 2, 3])
-            assert len(w) == 3
+            #TODO: this test used to work for kriging, but now rbf throws error instead of warning - new error about -0.5 or 4 dex abundance values in _coarse_search
+            #the error is needed to make sure coarse search doesn't run forever because rbf does funky things in extrapolation
+            #Test_find_abund.models.find_abund([600, 700], [1, 0.9], [0.5, 0.5], 5000, 2.5, -2, prior = [1, 2, 3])
+            #Test_find_abund.models.find_abund([600, 700], [1, 0.9], [0.5, 0.5], 5000, 2.5, -2, abunds = [1, 2, 3])
+            assert len(w) == 1
             for i in range(len(w)):
                 assert issubclass(w[i].category, UserWarning)
 

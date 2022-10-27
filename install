@@ -2,9 +2,9 @@
 #2. Navigate into the subdirectory
 cd breidablik
 #3. Download models
-wget http://www.mso.anu.edu.au/~ellawang/models.zip
-unzip -q models.zip
-rm models.zip
+wget http://www.mso.anu.edu.au/~ellawang/models1.zip
+unzip -q models1.zip
+rm models1.zip
 #4. Download data
 wget http://www.mso.anu.edu.au/~ellawang/balder.zip
 unzip -q balder.zip

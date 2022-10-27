@@ -31,7 +31,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.6.5',  # Required
+    version='1.0.0',  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
@@ -133,12 +133,10 @@ setup(
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['hypothesis>=4.17',
-                      'joblib==0.13',
                       'numpy>=1.15',
-                      'scikit-learn==0.21',
+                      'torch>=1.12',
                       'scipy>=1.3',
-                      'pytest>=3.5',
-                      'pykrige==1.4'],  # Optional
+                      'pytest>=3.5'],  # Optional
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
@@ -157,7 +155,7 @@ setup(
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
     package_data={  # Optional
-        'breidablik': ['Balder/wavelengths.dat', 'grid_snapshot.txt', 'models/*/*'],
+        'breidablik': ['Balder/wavelengths.dat', 'grid_snapshot.txt', 'models1/*/*'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
