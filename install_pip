@@ -23,4 +23,4 @@ while true; do
 done
 
 # echo message to remove the repo
-echo "The Breidablik repository is no longer needed, feel free to delete it."
+echo "The install script is no longer needed, feel free to delete it."
