@@ -64,7 +64,7 @@ class Nlte:
         if (abundance < -0.5) or (abundance > 4):
             warnings.warn('Input abundance is outside of the grid, results are extrapolated and may not be reliable.')
 
-        predicted_li = self._nlte_correction(eff_t, surf_g, met, [abundance], center = center)[0]
+        predicted_li = self._nlte_correction(eff_t, surf_g, met, [abundance], center = center)[0][0]
 
         return predicted_li
 

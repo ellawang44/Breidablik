@@ -58,7 +58,7 @@ def _get_model_path(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = _b
     return model_path
 
 def read(eff_t, surf_g, met, abund, D = '3D', a = 1.5, v = 1, data_path = None):
-    """Reads in the flux data for the specified dimension and stellar parameters.
+    """Reads in the flux data for the specified dimension and stellar parameters. Will only work if loose grid is downloaded, use read_all instead.
 
     Parameters
     ----------
@@ -120,7 +120,7 @@ def get_wavelengths(data_path = None):
     return wl
 
 def read_all_abund(eff_t, surf_g, met, D = '3D', a = 1.5, v = 1, data_path = None):
-    """Reads in the fluxes for all lithium abundances for a dimension and stellar model.
+    """Reads in the fluxes for all lithium abundances for a dimension and stellar model. Will only work if loose grid is downloaded, use read_all instead. 
 
     Parameters
     ----------
@@ -177,8 +177,11 @@ def read_all(D = '3D', a = 1.5, v = 1, data_path = None):
 
     # set default data_path
     data_path = data_path or _base_path.parent / 'Balder'
-
+    
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
+    if os.path.exists(f'{D_path}.npy'):
+        return np.load(f'{D_path}.npy', allow_pickle=True).item()
+
     models = os.listdir(D_path)
     data = {}
     for model in models:

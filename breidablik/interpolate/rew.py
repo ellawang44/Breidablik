@@ -67,7 +67,7 @@ class Rew:
         # warn if stellar parameters are too far outside the edge of the grid
         _grid_check(eff_t, surf_g, met)
 
-        predicted_li = self._find_abund(eff_t, surf_g, met, [rew], center = center)[0]
+        predicted_li = self._find_abund(eff_t, surf_g, met, [rew], center = center)[0][0]
 
         # warn if predicted Li is outside of grid
         if (predicted_li < -0.5) or (predicted_li > 4):
