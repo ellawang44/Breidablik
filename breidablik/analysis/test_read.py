@@ -10,8 +10,11 @@ import warnings
 _base_path = Path(__file__).parent.parent
 balder_path = os.path.join(_base_path, 'Balder')
 balder_files = os.listdir(balder_path)
-# skip these tests if there is no raw data
-pytestmark = pytest.mark.skipif((len(balder_files) == 1) and (balder_files[0] == 'wavelengths.dat'), reason = 'No raw data')
+# skip these tests if there is no loose raw data
+pytestmark = pytest.mark.skipif(
+    ((len(balder_files) == 1) and (balder_files[0] == 'wavelengths.dat')) or
+    ('3D.npy' in balder_files), 
+    reason = 'No loose raw data')
 
 class Test_name_add:
 

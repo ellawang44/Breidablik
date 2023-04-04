@@ -6,6 +6,7 @@ import numpy as np
 import os
 from pathlib import Path
 from scipy.interpolate import CubicSpline
+from scipy.stats import norm
 import warnings
 
 _base_path = Path(__file__).parent
@@ -69,7 +70,7 @@ class Spectra:
         abunds : List[Real], 1darray, optional
             Determine the abundances you want the probability caculated over. Overrides the min_abund and max_abund parameters. This parameter is ignored if prior is not set. Only used if method is 'bayes'.
         prior : List[Real], 1darray, optional
-            Set the prior to the abundances specified via abunds. This parameter is ignored if abunds is not set. Only used if method is 'bayes'. If method is 'bayes' but no prior is set, uses uniform prior. Needs to be the same length as abunds.
+            Set the prior to the abundances specified via abunds. This parameter is ignored if abunds is not set. Only used if method is 'bayes'. If method is 'bayes' but no prior is set, uses uniform prior + gaussian with sigma=1 below -0.5. Needs to be the same length as abunds.
 
         Returns
         -------
@@ -196,8 +197,16 @@ class Spectra:
                 # this is done so not too many values are passed onto the bayesian function
                 return self._coarse_search(wavelength, flux, flux_err, eff_t, surf_g, met, abunds[l_ind], abunds[r_ind], accuracy = accuracy, initial_accuracy = initial_accuracy/10)
             # find pdf
-            fine_abunds = np.arange(abunds[l_ind], abunds[r_ind] + accuracy/2, accuracy)
+            fine_abunds = np.linspace(abunds[l_ind], abunds[r_ind], 100)
             fine_probs = self._bayesian_inference(wavelength, flux, flux_err, eff_t, surf_g, met, fine_abunds)
+            # add points to the middle to meet accuracy
+            steps = int(np.ceil((fine_abunds[1] - fine_abunds[0])/accuracy))
+            ind = np.argmax(fine_probs)
+            mid_abunds = np.linspace(fine_abunds[ind-1], fine_abunds[ind+1], steps)
+            mid_probs = self._bayesian_inference(wavelength, flux, flux_err, eff_t, surf_g, met, mid_abunds)
+            # concat the arrays
+            fine_abunds = np.concatenate([fine_abunds[:ind-1], mid_abunds, fine_abunds[ind+2:]])
+            fine_probs = np.concatenate([fine_probs[:ind-1], mid_probs, fine_probs[ind+2:]])
             return self._calc_bayes_err(fine_abunds, fine_probs)
         # if we haven't found the pdf
         half = (max_abund - min_abund)/2
@@ -215,24 +224,26 @@ class Spectra:
             r_half = half
         new_min_abund = min_abund - l_half
         new_max_abund = max_abund + r_half
-        if new_min_abund < -0.5 or new_max_abund > 4:
-            raise ValueError('The abundance of input spectrum is too close to edge of allowed values to compute the lower/upper errors. Use chisq method instead.')
         return self._coarse_search(wavelength, flux, flux_err, eff_t, surf_g, met, new_min_abund, new_max_abund, accuracy = accuracy, initial_accuracy = initial_accuracy)
 
     def _calc_bayes_err(self, abunds, probs):
         """Find the best abundance through bayesian inference and also calculate the error associated with this measurement.
         """
 
+        # get cumsum
+        cumsum = np.cumsum(probs)
+        cdf = cumsum/cumsum[-1]
+        # delete the bits above and below, don't need, and often too flat
+        mask = (0.01 < cdf) & (cdf < 0.99)
+        cs = CubicSpline(cdf[mask], abunds[mask])
         # find best abundance
         best_abund = abunds[np.argmax(probs)]
         # find errors
-        cumsum = np.cumsum(probs)
-        cdf = cumsum/cumsum[-1]
         l_sig = 0.5 - 0.34
         r_sig = 0.5 + 0.34
-        l_abund = abunds[np.argmin(np.abs(cdf - l_sig))]
-        r_abund = abunds[np.argmin(np.abs(cdf - r_sig))]
-        l_err = l_abund - best_abund
+        l_abund = cs(l_sig)
+        r_abund = cs(r_sig)
+        l_err = best_abund - l_abund
         r_err = r_abund - best_abund
         return (best_abund, [l_err, r_err])
 
@@ -243,7 +254,10 @@ class Spectra:
         probs = []
         guess_fluxes = self._predict_flux(eff_t, surf_g, met, abunds)
         if prior is None:
-            prior = np.full(len(guess_fluxes), 1)
+            # uniform prior + gaussian below -0.5 sigma=1
+            prior_fill = norm.pdf(0, 0, 1)
+            prior = norm.pdf(abunds, -0.5, 1) 
+            prior[-0.5 <= abunds] = prior_fill
 
         for g_flux, p, a in zip(guess_fluxes, prior, abunds):
             model = CubicSpline(self.cut_wl, g_flux)
@@ -261,7 +275,7 @@ class Spectra:
 
         xdata = np.array(xdata)
         ydata = np.array(ydata)
-        ln_p_data_given_model = np.sum(-(ydata - model(xdata))**2/(2*sigma**2))
+        ln_p_data_given_model = np.sum(-np.log(sigma)-0.5*((ydata - model(xdata))/sigma)**2)
         posterior = ln_p_data_given_model + np.log(prior) 
         return posterior
 
