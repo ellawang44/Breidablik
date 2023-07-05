@@ -46,7 +46,7 @@ The easiest way to update the code is by doing a clean install.
 
 There are 3 components to Breidablik: synthetic spectra from Balder, trained models for interpolation, the code itself. 
 
-The synthetic spectra from Balder is downloaded once upon install, if there were updates to this, reinstall is recommended.
+The synthetic spectra from Balder is downloaded once upon install, if there were updates to this, reinstall is recommended. Note that old versions of Breidablik installed spectra as separate files (~2000 files), new versions of Breidablik have one numpy file per grid. This change was made because pip takes a while to delete a lot of small files. If you are uninstalling an old version of Breidablik, be aware that it might take a while. 
 
 The trained models for interpolation is downloaded upon manual install, but comes with the package if installed through pip. If you've installed the code manually, you will need to update the trained models manually.
 

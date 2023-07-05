@@ -316,7 +316,7 @@ class Spectra:
         # warn if stellar parameters are too far outside the edge of the grid
         _grid_check(eff_t, surf_g, met)
         # warn if abundance is outside the grid range
-        if (abundance < -0.5) or (abundance > 4):
+        if abundance > 4:
             warnings.warn('Input abundance is outside of the grid, results are extrapolated and may not be reliable.')
 
         return self._predict_flux(eff_t, surf_g, met, [abundance], user_call = True)[0]
@@ -329,6 +329,36 @@ class Spectra:
         user_call : If the user calls this function, it will always predict the full spectrum, instead of using the cut section.
         """
 
+        abundance = np.array(abundance, dtype=np.float64)
+
+        ext = self._extrapolate(eff_t, surf_g, met, abundance[abundance<-0.5])
+        inter = self._interpolate(eff_t, surf_g, met, abundance[abundance>=-0.5])
+
+        if len(ext) == 0:
+            predicted = inter
+        elif len(inter) == 0:
+            predicted = ext
+        else:
+            predicted = np.concatenate([ext, inter], axis=0)
+
+        return predicted
+
+    def _extrapolate(self, eff_t, surf_g, met, abundance, user_call = False):
+        '''Give the flux for abundance < -0.5'''
+        # calculate grads and intercepts
+        abunds = np.array([-0.5, 0])
+        fluxes = self._interpolate(eff_t, surf_g, met, abunds, user_call=user_call)
+        # 10**abunds = 1 when abunds = 0
+        grads = (fluxes[1] - fluxes[0])/(1 - 10**abunds[0])
+        intercepts = fluxes[1] - grads
+
+        # predict fluxes
+        tiled_abundances = 10**np.tile(abundance, (len(grads), 1)).T
+        predicted = tiled_abundances*grads+intercepts
+        return predicted
+    
+    def _interpolate(self, eff_t, surf_g, met, abundance, user_call = False):
+        '''Give the flux for -0.5 <= abundance.'''
         if (self.cut_models is not None) and (not user_call): # only predict a range of models
             models = self.cut_models
         else: # predict all models
@@ -343,7 +373,7 @@ class Spectra:
             predicted.append(np.array([mat @ wi for wi in models]))
 
         predicted = 1 + self.relative_error - 10**np.array(predicted)
-        
+        predicted[predicted>1] = 1 # truncate values above 1
         return predicted
 
     def _phi(self, r):
