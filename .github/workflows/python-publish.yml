@@ -30,7 +30,7 @@ jobs:
         build
         --user
     - name: Download models
-      run: >-
+      run: |
         cd breidablik
         wget https://www.mso.anu.edu.au/~ellawang/models.zip
         unzip models.zip
