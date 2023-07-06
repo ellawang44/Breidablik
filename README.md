@@ -30,7 +30,7 @@ cd Breidablik
 If the above automatic installation did not work for you, then to install without using `pip`, there are 5 steps:
 1. Navigate to where you want this repository and clone this git repository.
 2. Navigate into `Breidablik/breidablik`.
-3. Download the models from `models_vx.x.x.zip` on http://www.mso.anu.edu.au/~ellawang/ and unzip it. Pick the model based on the version of Breidablik you want to run. The model version number will be just lower than your Breidablik version number. e.g. running Breidablik v1.1.0 will require models v1.0.0. 
+3. Download the models from `models.zip` on http://www.mso.anu.edu.au/~ellawang/ and unzip it. If you are running an older version of Breidablik, pick the model based on the version of Breidablik you want to run. The model version number will be just lower than your Breidablik version number. e.g. running Breidablik v1.1.0 will require models v1.0.0. 
 4. Optional, download the raw data from `balder.zip` on http://www.mso.anu.edu.au/~ellawang/ and unzip it.
 5. Optional, add this directory to the python path. This makes the directory findable by python no matter where it is launched.
 
