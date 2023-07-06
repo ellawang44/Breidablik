@@ -29,6 +29,12 @@ jobs:
         pip install
         build
         --user
+    - name: Download models
+      run: |
+        cd breidablik
+        wget https://www.mso.anu.edu.au/~ellawang/models.zip
+        unzip models.zip
+        rm models.zip
     - name: Build a binary wheel and a source tarball
       run: >-
         python3 -m
