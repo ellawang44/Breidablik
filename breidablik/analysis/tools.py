@@ -28,7 +28,7 @@ def cut_wavelength(wavelength, center = 670.9659, upper = 10, lower = 10):
     wl_cut = wavelength[(low <= wavelength) & (high >= wavelength)]
     return wl_cut
 
-def cut(wavelength, line_profile, center = 670.9659, upper = 10, lower = 10):
+def cut(wavelength, line_profile, errors = None, center = 670.9659, upper = 10, lower = 10):
     """Cuts the wavelength and line profile and returns the values between center - lower and center + upper.
 
     Parameters
@@ -37,6 +37,8 @@ def cut(wavelength, line_profile, center = 670.9659, upper = 10, lower = 10):
         Input wavelengths. Needs to be monotonically increasing.
     line_profile : List[Real] or 1darray
         Input line profile.
+    errors : List[Real] or 1darray, optional
+        Errors associated with input line profile. If using synthetic spectra, then no errors, leave as default value. 
     center : Real, optional
         The center of the wavelengths where the cut should be taken, in the same units as the wavelength. The 3 lithium lines are centered at 610.5298, 670.9659, and 812.8606 nm in the Balder results.
     upper : Positive Real, optional
@@ -46,19 +48,24 @@ def cut(wavelength, line_profile, center = 670.9659, upper = 10, lower = 10):
 
     Returns
     -------
-    cut_data : 2darray
-        Cut wavelengths and line profiles.
+    cut_data : ndarray
+        Cut wavelengths and line profiles, errors if provided.
     """
 
     wavelength = np.array(wavelength)
     line_profile = np.array(line_profile)
+    if errors is not None:
+        errors = np.array(errors)
 
     low = center - lower
     high = center + upper
     mask = (low <= wavelength) & (high >= wavelength)
     wl_cut = wavelength[mask]
     line_cut = line_profile[mask]
-    cut_data = np.array([wl_cut, line_cut])
+    if errors is not None:
+        cut_data = np.array([wl_cut, line_cut, errors[mask]])
+    else:
+        cut_data = np.array([wl_cut, line_cut])
     return cut_data
 
 def rew(wavelength, line_profile, center = 670.9659, upper = 10, lower = 10, num = 10000):

@@ -23,12 +23,12 @@ class Rew:
         """
 
         # set default paths
-        model_path = model_path or _base_path.parent / 'models1/rew'
-        scalar_path = scalar_path or _base_path.parent / 'models1/rew/scalar.npy'
-        model_path_610 = model_path_610 or _base_path.parent / 'models1/rew_610'
-        scalar_path_610 = scalar_path_610 or _base_path.parent / 'models1/rew_610/scalar.npy'
-        model_path_810 = model_path_810 or _base_path.parent / 'models1/rew_810'
-        scalar_path_810 = scalar_path_810 or _base_path.parent / 'models1/rew_810/scalar.npy'
+        model_path = model_path or _base_path.parent / 'models/rew'
+        scalar_path = scalar_path or _base_path.parent / 'models/rew/scalar.npy'
+        model_path_610 = model_path_610 or _base_path.parent / 'models/rew_610'
+        scalar_path_610 = scalar_path_610 or _base_path.parent / 'models/rew_610/scalar.npy'
+        model_path_810 = model_path_810 or _base_path.parent / 'models/rew_810'
+        scalar_path_810 = scalar_path_810 or _base_path.parent / 'models/rew_810/scalar.npy'
         # load models
         scalar = Scalar()
         scalar.load(scalar_path)
@@ -36,7 +36,7 @@ class Rew:
         scalar_610.load(scalar_path_610)
         scalar_810 = Scalar()
         scalar_810.load(scalar_path_810)
-        self.models = [FFNN(0, 0, model=str(model_path_610)), FFNN(0, 0, model=str(model_path)), FFNN(0, 0, model=str(model_path_810))]
+        self.models = [FFNN(model=str(model_path_610)), FFNN(model=str(model_path)), FFNN(model=str(model_path_810))]
         self.scalars = [scalar_610, scalar, scalar_810]
 
     def find_abund(self, eff_t, surf_g, met, rew, center = 670.9659):
@@ -87,6 +87,6 @@ class Rew:
         scalar = self.scalars[ind]
         model = self.models[ind]
         transformed_input = scalar.transform([[eff_t, surf_g, met, r] for r in rew])
-        predicted_li = model.predict(transformed_input)
+        predicted_li = model(transformed_input)
 
         return predicted_li

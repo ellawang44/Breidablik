@@ -23,12 +23,12 @@ class Nlte:
         """
 
         # set default paths
-        model_path = model_path or _base_path.parent / 'models1/nlte'
-        scalar_path = scalar_path or _base_path.parent / 'models1/nlte/scalar.npy'
-        model_path_610 = model_path_610 or _base_path.parent / 'models1/nlte_610'
-        scalar_path_610 = scalar_path_610 or _base_path.parent / 'models1/nlte_610/scalar.npy'
-        model_path_810 = model_path_810 or _base_path.parent / 'models1/nlte_810'
-        scalar_path_810 = scalar_path_810 or _base_path.parent / 'models1/nlte_810/scalar.npy'
+        model_path = model_path or _base_path.parent / 'models/nlte'
+        scalar_path = scalar_path or _base_path.parent / 'models/nlte/scalar.npy'
+        model_path_610 = model_path_610 or _base_path.parent / 'models/nlte_610'
+        scalar_path_610 = scalar_path_610 or _base_path.parent / 'models/nlte_610/scalar.npy'
+        model_path_810 = model_path_810 or _base_path.parent / 'models/nlte_810'
+        scalar_path_810 = scalar_path_810 or _base_path.parent / 'models/nlte_810/scalar.npy'
         # load models
         scalar = Scalar()
         scalar.load(scalar_path)
@@ -36,7 +36,7 @@ class Nlte:
         scalar_610.load(scalar_path_610)
         scalar_810 = Scalar()
         scalar_810.load(scalar_path_810)
-        self.models = [FFNN(0, 0, model=str(model_path_610)), FFNN(0, 0, model=str(model_path)), FFNN(0, 0, model=str(model_path_810))]
+        self.models = [FFNN(model=str(model_path_610)), FFNN(model=str(model_path)), FFNN(model=str(model_path_810))]
         self.scalars = [scalar_610, scalar, scalar_810]
 
     def nlte_correction(self, eff_t, surf_g, met, abundance, center = 670.9659):
@@ -80,6 +80,6 @@ class Nlte:
         scalar = self.scalars[ind]
         model = self.models[ind]
         transformed_input = scalar.transform([[eff_t, surf_g, met, a] for a in abunds])
-        nltec = model.predict(transformed_input)
+        nltec = model(transformed_input)
 
         return nltec

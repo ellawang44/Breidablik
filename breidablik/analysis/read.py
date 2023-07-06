@@ -178,10 +178,27 @@ def read_all(D = '3D', a = 1.5, v = 1, data_path = None):
     # set default data_path
     data_path = data_path or _base_path.parent / 'Balder'
     
+    # compact files
     D_path = _get_dimension_path(D = D, a = a, v = v, data_path = data_path)
     if os.path.exists(f'{D_path}.npy'):
-        return np.load(f'{D_path}.npy', allow_pickle=True).item()
+        stored_data = np.load(f'{D_path}.npy')
+        data = {}
+        for eff_t, surf_g, met, abund, ftype, *flux in stored_data:
+            # set ftype
+            if ftype == 0:
+                ftype = 'flux'
+            elif ftype == 1:
+                ftype = 'fluxl'
+            # create sp dict
+            if (eff_t, surf_g, met) not in data.keys():
+                data[eff_t, surf_g, met] = {}
+            # create abund dict
+            if abund not in data[eff_t, surf_g, met].keys():
+                data[eff_t, surf_g, met][abund] = {}
+            data[eff_t, surf_g, met][abund][ftype] = flux
+        return data
 
+    # loose files
     models = os.listdir(D_path)
     data = {}
     for model in models:

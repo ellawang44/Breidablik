@@ -29,8 +29,8 @@ class Spectra:
         """
 
         # set default paths
-        model_path = model_path or _base_path.parent / 'models1/rbf'
-        scalar_path = scalar_path or _base_path.parent / 'models1/rbf/scalar.npy'
+        model_path = model_path or _base_path.parent / 'models/rbf'
+        scalar_path = scalar_path or _base_path.parent / 'models/rbf/scalar.npy'
         # load models
         self.scalar = Scalar()
         self.scalar.load(scalar_path)
