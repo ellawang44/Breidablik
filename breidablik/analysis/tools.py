@@ -92,7 +92,7 @@ def rew(wavelength, line_profile, center = 670.9659, upper = 10, lower = 10, num
         The REW.
     """
 
-    wl_cut, line_cut = cut(wavelength, line_profile, center, upper = upper, lower = lower)
+    wl_cut, line_cut = cut(wavelength, line_profile, center = center, upper = upper, lower = lower)
     fine_wl = np.linspace(wl_cut[0], wl_cut[-1], num) # includes the last point
     fine_line = CubicSpline(wl_cut, line_cut)(fine_wl)
     area = np.trapz(1-fine_line, fine_wl)
