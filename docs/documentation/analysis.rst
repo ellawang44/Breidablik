@@ -6,7 +6,7 @@ read
 ----
 Functions used to read in the raw Balder data and split it into groups.
 
-.. autoapimodule:: breidablik.analysis.read
+.. automodule:: breidablik.analysis.read
     :members:
     :undoc-members:
 
