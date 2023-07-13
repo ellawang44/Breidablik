@@ -21,7 +21,7 @@ Quality of life functions used to manipulate spectra.
 
 format_read
 -----------
-Functions used to transform data into a format that can be easily usein a machine learning model.
+Functions used to transform data into a format that can be easily use in a machine learning model.
 
 .. automodule:: breidablik.analysis.format_read
     :members:
