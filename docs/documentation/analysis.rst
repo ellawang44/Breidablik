@@ -14,7 +14,7 @@ tools
 -----
 Quality of life functions used to manipulate spectra.
 
-.. automodule:: breidablik.analysis.tools
+.. autoapimodule:: breidablik.analysis.tools
     :members:
     :undoc-members:
 
@@ -23,6 +23,6 @@ format_read
 -----------
 Functions used to transform data into a format that can be easily use in a machine learning model.
 
-.. automodule:: breidablik.analysis.format_read
+.. autoapimodule:: breidablik.analysis.format_read
     :members:
     :undoc-members:
