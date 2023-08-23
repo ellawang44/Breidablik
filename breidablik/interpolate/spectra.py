@@ -331,8 +331,8 @@ class Spectra:
 
         abundance = np.array(abundance, dtype=np.float64)
 
-        ext = self._extrapolate(eff_t, surf_g, met, abundance[abundance<-0.5])
-        inter = self._interpolate(eff_t, surf_g, met, abundance[abundance>=-0.5])
+        ext = self._extrapolate(eff_t, surf_g, met, abundance[abundance<-0.5], user_call = user_call)
+        inter = self._interpolate(eff_t, surf_g, met, abundance[abundance>=-0.5], user_call = user_call)
 
         if len(ext) == 0:
             predicted = inter
