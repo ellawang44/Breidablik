@@ -12,7 +12,7 @@ while true; do
                 INSTALL_PATH=${LOC:9}
                 OLD_PWD=$(pwd)
                 cd $INSTALL_PATH/breidablik;
-                wget http://www.mso.anu.edu.au/~ellawang/balder.zip;
+                wget https://zenodo.org/records/10428805/files/balder.zip;
                 unzip -q balder.zip;
                 rm balder.zip;
                 cd $OLD_PWD;
