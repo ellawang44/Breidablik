@@ -9,7 +9,7 @@ This example will show you how to manipulate the raw data using functions in ``b
 Example
 -------
 
-We start with our simulated spectra for the sun with 1.1 dex :sup:`7`\Li, ``sun.txt``, this can be downloaded from https://www.mso.anu.edu.au/~ellawang/
+We start with our simulated spectra for the sun with 1.1 dex :sup:`7`\Li, ``sun.txt``, this can be downloaded from https://zenodo.org/records/10428805
 
 First, we'll read in the simulated spectra and wavelengths.
 
