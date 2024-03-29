@@ -56,4 +56,4 @@ The code itself can be updated both through pip and git if you installed manuall
 See the examples at https://breidablik.readthedocs.io/en/latest/Getting%20Started.html#examples
 
 ## License and Citation
-If you use this package for any academic purpose, please cite Wang et al. 2020 (arXiv:2010.15248).
+If you use this package for any academic purpose, please cite Wang et al. 2020 (arXiv:2010.15248) and Wang et al. 2024 (arXiv:2402.02669).
