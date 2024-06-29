@@ -33,8 +33,6 @@ jobs:
       run: |
         cd breidablik
         wget https://zenodo.org/records/10428805/files/balder.zip
-        unzip models.zip
-        rm models.zip
     - name: Build a binary wheel and a source tarball
       run: >-
         python3 -m
