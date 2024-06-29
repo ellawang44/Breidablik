@@ -32,7 +32,7 @@ jobs:
     - name: Download models
       run: |
         cd breidablik
-        wget https://www.mso.anu.edu.au/~ellawang/models.zip
+        wget https://zenodo.org/records/10428805/files/balder.zip
         unzip models.zip
         rm models.zip
     - name: Build a binary wheel and a source tarball
