@@ -1,0 +1,3 @@
+include breidablik/Balder/wavelengths.dat
+include breidablik/grid_snapshot.txt
+include breidablik/models/*/*
