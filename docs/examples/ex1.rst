@@ -11,7 +11,7 @@ Example
 
 Lets say we have an observed spectrum of the sun and we want to determine the lithium abundance from this spectrum using the 670.9 nm lithium line.
 
-Download the example spectrum, ``example_spec.txt``, from https://zenodo.org/records/10428805. This example spectrum was generated from our simulation of the sun with noise added to the spectrum, how this is done is shown in example 3: generate mock observed spectrum
+Download the example spectrum, ``example_spec.txt``, from https://zenodo.org/records/10428804. This example spectrum was generated from our simulation of the sun with noise added to the spectrum, how this is done is shown in example 3: generate mock observed spectrum
 
 First, we will read in the spectrum.
 
