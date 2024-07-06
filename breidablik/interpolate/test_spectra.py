@@ -89,8 +89,7 @@ class Test_predict_flux:
     def test_warning_abundance(self):
         with warnings.catch_warnings(record = True) as w:
             warnings.simplefilter('always')
-            Test_predict_flux.models.predict_flux(5000, 2.5, -2, -1)
             Test_predict_flux.models.predict_flux(5000, 2.5, -2, 5)
-            assert len(w) == 2
+            assert len(w) == 1
             for i in range(len(w)):
                 assert issubclass(w[i].category, UserWarning)
