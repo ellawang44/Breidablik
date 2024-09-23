@@ -32,7 +32,7 @@ jobs:
     - name: Download models
       run: |
         cd breidablik
-        wget https://zenodo.org/records/10428805/files/models_v1.5.0.zip
+        wget https://zenodo.org/records/13829605/files/models_v1.5.0.zip
         unzip -q models_v1.5.0.zip
         rm models_v1.5.0.zip
     - name: Build a binary wheel and a source tarball
