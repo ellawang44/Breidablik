@@ -4,12 +4,17 @@ import warnings
 
 _base_path = Path(__file__).parent
 
-def _grid_check(eff_t, surf_g, met):
+def _grid_check(eff_t, surf_g, met, dim = 3):
     """Check if the stellar parameters are too far outside the edge of the grid. Essentially normalising the parameters and then drawing circles around the points. 
     """
 
-    with open(_base_path.parent / 'grid_snapshot.txt', 'r') as f:
-        t_step, m_step = np.float_(f.readline().split())
+    if dim == 3:
+        filename = ''
+    elif dim == 1:
+        filename = '_marcs'
+
+    with open(_base_path.parent / 'grid_snapshot{}.txt'.format(filename), 'r') as f:
+        t_step, m_step = np.float64(f.readline().split())
         grid = np.loadtxt(f)
     # round the teffs
     grid[:,0] = np.round(grid[:,0]*2)/2
