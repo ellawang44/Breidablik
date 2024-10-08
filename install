@@ -3,7 +3,7 @@
 cd breidablik
 #3. Download models
 wget https://zenodo.org/records/13829605/files/models_v1.5.0.zip
-unzip -q models_v1.5.0.zip
+unzip -qo models_v1.5.0.zip
 rm models_v1.5.0.zip
 #4. Optional, download data
 while true; do
@@ -11,7 +11,7 @@ while true; do
     [ -z "${yn}" ] && yn='y'
     case $yn in 
         [Yy]* ) wget https://zenodo.org/records/10450568/files/balder.zip;
-            unzip -q balder.zip;
+            unzip -qo balder.zip;
             rm balder.zip;
             break;;
         [Nn]* ) exit;;

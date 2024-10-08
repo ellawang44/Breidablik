@@ -40,7 +40,10 @@ classifiers = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["breidablik"]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["breidablik*"]  # package names should match these glob patterns (["*"] by default)
+exclude = []  # exclude packages matching these glob patterns (empty by default)
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 
 [project.urls]
 Homepage = "https://github.com/ellawang44/Breidablik"

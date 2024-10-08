@@ -13,7 +13,7 @@ while true; do
                 OLD_PWD=$(pwd)
                 cd $INSTALL_PATH/breidablik;
                 wget https://zenodo.org/records/10450568/files/balder.zip;
-                unzip -q balder.zip;
+                unzip -qo balder.zip;
                 rm balder.zip;
                 cd $OLD_PWD;
                 break;;
