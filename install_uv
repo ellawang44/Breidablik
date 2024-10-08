@@ -1,0 +1,26 @@
+#!/bin/bash
+
+#1. Install with pip
+uv pip install breidablik
+
+#2,3. Optional, download the raw data and put it in the breidablik folder
+while true; do
+    read -p "Do you wish to download the raw data? [Y/n] " yn
+    [ -z "${yn}" ] && yn='y'
+    case $yn in
+        [Yy]* ) LOC=$(uv pip show breidablik | grep "Location");
+                INSTALL_PATH=${LOC:9}
+                OLD_PWD=$(pwd)
+                cd $INSTALL_PATH/breidablik;
+                wget https://zenodo.org/records/10450568/files/balder.zip;
+                unzip -qo balder.zip;
+                rm balder.zip;
+                cd $OLD_PWD;
+                break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
+# echo message to remove the repo
+echo "The install script is no longer needed, feel free to delete it."
